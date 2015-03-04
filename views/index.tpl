@@ -66,7 +66,7 @@
 			<div class="container">
 			<div class="row">
 			  <div class="hero-text">
-			    <h1>Welcome to Beego!</h1>
+			    <h1>Welcome to Hiso Hotel!</h1>
 			    <p class="description">
 			    	Beego is a simple & powerful Go web framework which is inspired by tornado and sinatra.
 			    <br />
