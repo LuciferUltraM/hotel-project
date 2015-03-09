@@ -1,8 +1,7 @@
 package models
 
 type Room struct {
-	RoomNo    string
-	RoomFloor string
-	Status    string
-	RoomType  *RoomType
+	RoomNo   string
+	Floor    string
+	RoomType *RoomType
 }

@@ -4,7 +4,6 @@ import "time"
 
 type RoomBooking struct {
 	RoomBookingNo    int
-	Customer         *Customer
 	CheckInDate      time.Time
 	CheckOutDate     time.Time
 	BookingDate      time.Time
@@ -12,5 +11,8 @@ type RoomBooking struct {
 	Status           string
 	Receipt          *Receipt
 	Refund           *Refund
-	RoomBookingItems []*RoomBookingItem
+}
+
+func (rm *RoomBooking) GetRoomCheckIn(checkInDate time.Time) {
+
 }

@@ -1,8 +1,7 @@
 package models
 
 type RoomType struct {
-	Name    string
-	Rate    string
-	Deposit int
-	Detail  string
+	Name   string
+	Rate   int32
+	Detail string
 }
