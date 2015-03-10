@@ -2,6 +2,6 @@ package models
 
 type RoomType struct {
 	Name   string
-	Rate   int32
+	Rate   float32
 	Detail string
 }

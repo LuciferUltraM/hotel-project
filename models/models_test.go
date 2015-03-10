@@ -2,37 +2,37 @@ package models
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/suite"
 )
 
 type ModelsTestSuite struct {
 	suite.Suite
-	CustomerName string
-	CardID       string
-	Tel          string
-	Nationality  string
-	// BirthDate    time.Time
-
+	CustomerName     string
+	CardID           string
+	Tel              string
+	Nationality      string
+	CheckInDate      time.Time
+	CheckOutDate     time.Time
 	NumberOfCustomer int
 }
 
 func (suite *ModelsTestSuite) SetupTest() {
 	suite.CustomerName = "Nat Ton"
+	suite.CardID = "1709912345678"
 	suite.Tel = "0895555555"
 	suite.Nationality = "Thai"
-	// suite.BirthDate = time.Date(1987, time.May, 13, 0, 0, 0, 0, time.UTC)
+	suite.CheckInDate = time.Date(2015, 3, 10, 0, 0, 0, 0, time.UTC)
+	suite.CheckOutDate = time.Date(2015, 3, 12, 0, 0, 0, 0, time.UTC)
 
 	suite.NumberOfCustomer = 2
 }
 
 func (suite *ModelsTestSuite) MockHotelSystem() *HotelSystem {
-	roomTypes := suite.MockRoomTypes()
-	rooms := suite.MockRooms(roomTypes)
-	return &HotelSystem{
-		RoomTypes: roomTypes,
-		Rooms:     rooms,
-	}
+	hotel := new(HotelSystem)
+	hotel.InitInstance()
+	return hotel
 }
 
 func (suite *ModelsTestSuite) MockRoomTypes() []*RoomType {
@@ -51,17 +51,11 @@ func (suite *ModelsTestSuite) MockRooms(roomTypes []*RoomType) []*Room {
 	}
 }
 
-func (suite *ModelsTestSuite) MockRoomBooking() *RoomBooking {
-	return &RoomBooking{
-		NumberOfCustomer: suite.NumberOfCustomer,
-	}
-}
-
 func (suite *ModelsTestSuite) TestHotelSystem() {
 	hotelSystem := suite.MockHotelSystem()
 	suite.Len(hotelSystem.RoomTypes, 3)
-	suite.Len(hotelSystem.Rooms, 3)
-	suite.Equal(hotelSystem.Rooms[0].RoomType, hotelSystem.RoomTypes[0])
+	suite.Len(hotelSystem.Rooms, 50)
+	suite.Equal(hotelSystem.Rooms["101"].RoomType, hotelSystem.RoomTypes[0])
 }
 
 func (suite *ModelsTestSuite) TestRoomType() {
@@ -82,9 +76,41 @@ func (suite *ModelsTestSuite) TestRoom() {
 	}
 }
 
-func (suite *ModelsTestSuite) TestRoomBooking() {
-	rb := suite.MockRoomBooking()
-	suite.Equal(suite.NumberOfCustomer, rb.NumberOfCustomer, "they should be equal")
+func (suite *ModelsTestSuite) TestFindOptionRate() {
+	hotelSystem := suite.MockHotelSystem()
+	optionRate := hotelSystem.FindOptionRate("extra_bed")
+	suite.Equal(optionRate.GetName(), "extra_bed")
+	suite.Equal(optionRate.GetRate(), 1200)
+}
+
+func (suite *ModelsTestSuite) TestBooking() {
+	var hotel *HotelSystem
+	hotel = suite.MockHotelSystem()
+	rooms := []*Room{hotel.Rooms["101"], hotel.Rooms["102"]}
+	extraBeds := []bool{true, false}
+	roomBooking := hotel.ReserveRoom(rooms, extraBeds, suite.CheckInDate, suite.CheckOutDate)
+
+	suite.Equal(roomBooking.CheckInDate, suite.CheckInDate)
+	suite.Equal(roomBooking.CheckOutDate, suite.CheckOutDate)
+
+	amount := float32(7200)
+	suite.Equal(roomBooking.GetAmount(), amount)
+	suite.Equal(roomBooking.GetVat(), amount*7/100)
+	suite.Equal(roomBooking.GetGrandTotal(), amount+roomBooking.GetVat())
+}
+
+func (suite *ModelsTestSuite) TestRoomBookingCountDay() {
+	rb := &RoomBooking{}
+	countDay, err := rb.countDay(suite.CheckInDate, suite.CheckOutDate)
+	suite.Equal(countDay, 2)
+	suite.Nil(err)
+}
+
+func (suite *ModelsTestSuite) TestRoomBookingCountDayError() {
+	rb := &RoomBooking{}
+	countDay, err := rb.countDay(suite.CheckOutDate, suite.CheckInDate)
+	suite.Equal(countDay, 0)
+	suite.NotNil(err)
 }
 
 func TestModelsTestSuite(t *testing.T) {
