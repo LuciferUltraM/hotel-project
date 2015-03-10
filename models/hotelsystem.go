@@ -10,7 +10,7 @@ type HotelSystem struct {
 	RoomTypes    []*RoomType
 	Rooms        map[string]*Room
 	OptionRates  map[string]*OptionRate
-	RoomBookings []*RoomBooking
+	RoomBookings map[string]*RoomBooking
 }
 
 var instantiated *HotelSystem = nil
@@ -27,14 +27,14 @@ func (hotel *HotelSystem) InitInstance() {
 	hotel.RoomTypes = hotel.InitSampleRoomTypes()
 	hotel.Rooms = hotel.InitSampleRooms(hotel.RoomTypes)
 	hotel.OptionRates = hotel.InitSampleOptionRate()
-	hotel.RoomBookings = []*RoomBooking{}
+	hotel.RoomBookings = make(map[string]*RoomBooking)
 }
 
 func (hotel *HotelSystem) InitSampleRoomTypes() []*RoomType {
 	return []*RoomType{
-		&RoomType{"Superior Rooms", 3000, "Hiso Superior"},
-		&RoomType{"Excusive Rooms", 4000, "Hiso Excusive"},
-		&RoomType{"Jacuzzi Room", 5000, "Hiso Jacuzzi"},
+		&RoomType{0, "Superior Rooms", 3000, "Hiso Superior"},
+		&RoomType{1, "Excusive Rooms", 4000, "Hiso Excusive"},
+		&RoomType{2, "Jacuzzi Room", 5000, "Hiso Jacuzzi"},
 	}
 }
 
@@ -57,6 +57,10 @@ func (hotel *HotelSystem) InitSampleOptionRate() map[string]*OptionRate {
 	return optionRates
 }
 
+func (hotel *HotelSystem) FindRoom(roomNo string) *Room {
+	return hotel.Rooms[roomNo]
+}
+
 func (hotel *HotelSystem) FindOptionRate(optionName string) *OptionRate {
 	return hotel.OptionRates[optionName]
 }
@@ -66,14 +70,22 @@ func (hotel *HotelSystem) GetRoomCheckIn(checkInDate time.Time, checkOutDate tim
 }
 
 func (hotel *HotelSystem) ReserveRoom(
-	rooms []*Room,
+	selectedRooms []string,
 	extraBeds []bool,
 	checkInDate time.Time,
 	checkOutDate time.Time) *RoomBooking {
 	extraBedRate := hotel.FindOptionRate("extra_bed")
 	vatRate := hotel.FindOptionRate("vat_rate")
+	rooms := []*Room{}
+	for _, roomNo := range selectedRooms {
+		rooms = append(rooms, hotel.FindRoom(roomNo))
+	}
 	roomBooking := &RoomBooking{}
-	roomBooking.ReserveRoom(extraBedRate.GetRate(), vatRate.GetRate(), rooms, extraBeds, checkInDate, checkOutDate)
+	err := roomBooking.ReserveRoom(extraBedRate.GetRate(), vatRate.GetRate(), rooms, extraBeds, checkInDate, checkOutDate)
+	if err != nil {
+		panic(err)
+	}
 
+	hotel.RoomBookings[roomBooking.RoomBookingNo] = roomBooking
 	return roomBooking
 }
