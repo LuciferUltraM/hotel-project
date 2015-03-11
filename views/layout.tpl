@@ -12,14 +12,14 @@
     <title>Hiso Hotel :: {{< template "title" . >}}</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="static/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="static/css/navbar-fixed-top.css" rel="stylesheet">
+    <link href="/static/css/navbar-fixed-top.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="static/js/ie-emulation-modes-warning.js"></script>
+    <script src="/static/js/ie-emulation-modes-warning.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -27,11 +27,11 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <link rel="stylesheet" href="static/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
-    <script type="text/javascript" src="static/bower_components/jquery/dist/jquery.js"></script>
-    <script type="text/javascript" src="static/bower_components/jquery-ui/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="static/bower_components/angular/angular.js"></script>
-    <script type="text/javascript" src="static/bower_components/angular-ui-date/src/date.js"></script>
+    <link rel="stylesheet" href="/static/bower_components/jquery-ui/themes/smoothness/jquery-ui.css"/>
+    <script type="text/javascript" src="/static/bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="/static/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/static/bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="/static/bower_components/angular-ui-date/src/date.js"></script>
     {{< template "css" . >}}
   </head>
 
@@ -52,8 +52,8 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="/">Home</a></li>
-            <li><a href="/rooms">Room</a></li>
-            <li><a href="/roombookings">Room Booking</a></li>
+            <li><a href="/room">Room</a></li>
+            <li><a href="/roombooking">Room Booking</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
@@ -81,10 +81,9 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="static/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
 
     {{< template "js" . >}}
   </body>

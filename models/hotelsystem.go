@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -68,16 +69,12 @@ func (hotel *HotelSystem) InitSampleOptionRate() map[string]*OptionRate {
 
 func (hotel *HotelSystem) InitSampleRoomBooking() {
 	selectedRooms := []string{"102", "203"}
-	extraBeds := []bool{false, false}
-	checkInDate := time.Date(2015, 3, 13, 0, 0, 0, 0, time.UTC)
-	checkOutDate := time.Date(2015, 3, 15, 0, 0, 0, 0, time.UTC)
-	hotel.ReserveRoom(selectedRooms, extraBeds, checkInDate, checkOutDate)
+	extraBeds := []bool{true, false}
+	hotel.ReserveRoom(selectedRooms, extraBeds, "2015-03-13", "2015-03-15")
 
 	selectedRooms2 := []string{"205", "504"}
 	extraBeds2 := []bool{false, false}
-	checkInDate2 := time.Date(2015, 3, 13, 0, 0, 0, 0, time.UTC)
-	checkOutDate2 := time.Date(2015, 3, 17, 0, 0, 0, 0, time.UTC)
-	hotel.ReserveRoom(selectedRooms2, extraBeds2, checkInDate2, checkOutDate2)
+	hotel.ReserveRoom(selectedRooms2, extraBeds2, "2015-03-13", "2015-03-17")
 }
 
 func (hotel *HotelSystem) FindRoom(roomNo string) *Room {
@@ -88,23 +85,29 @@ func (hotel *HotelSystem) FindOptionRate(optionName string) *OptionRate {
 	return hotel.OptionRates[optionName]
 }
 
-func (hotel *HotelSystem) GetAvailableRoom(checkInDate time.Time, checkOutDate time.Time) (rooms map[string]*Room) {
+func (hotel *HotelSystem) FindRoomBooking(roomBookingNo string) *RoomBooking {
+	return hotel.RoomBookings[roomBookingNo]
+}
+
+func (hotel *HotelSystem) GetAvailableRoom(checkIn string, checkOut string) (rooms map[string]*Room) {
+	checkInDate := hotel.stringToDate(checkIn)
+	checkOutDate := hotel.stringToDate(checkOut)
 	rooms = hotel.cloneRooms()
 	for _, roomBooking := range hotel.RoomBookings {
 		isDeleted := false
-		for checkingDate := roomBooking.CheckInDate; checkingDate.Before(checkOutDate); checkingDate = checkInDate.AddDate(0, 0, 1) {
+		for checkingDate := checkInDate; checkingDate.Before(checkOutDate); checkingDate = checkingDate.AddDate(0, 0, 1) {
 			if isDeleted {
 				break
 			}
 
 			bookedDate := roomBooking.CheckInDate
 			for night := 0; night < roomBooking.NightAmount; bookedDate = roomBooking.CheckInDate.AddDate(0, 0, night) {
+				night++
 				if checkingDate == bookedDate {
 					hotel.deleteAvailableRooms(&rooms, roomBooking.Rooms)
 					isDeleted = true
 					break
 				}
-				night++
 			}
 		}
 	}
@@ -114,8 +117,10 @@ func (hotel *HotelSystem) GetAvailableRoom(checkInDate time.Time, checkOutDate t
 func (hotel *HotelSystem) ReserveRoom(
 	selectedRooms []string,
 	extraBeds []bool,
-	checkInDate time.Time,
-	checkOutDate time.Time) *RoomBooking {
+	checkIn string,
+	checkOut string) *RoomBooking {
+	checkInDate := hotel.stringToDate(checkIn)
+	checkOutDate := hotel.stringToDate(checkOut)
 	extraBedRate := hotel.FindOptionRate("extra_bed")
 	vatRate := hotel.FindOptionRate("vat_rate")
 	rooms := []*Room{}
@@ -144,4 +149,12 @@ func (hotel *HotelSystem) deleteAvailableRooms(rooms *map[string]*Room, deleteRo
 	for _, room := range deleteRooms {
 		delete(*rooms, room.RoomNo)
 	}
+}
+
+func (hotel *HotelSystem) stringToDate(dateStr string) time.Time {
+	dates := strings.Split(dateStr, "-")
+	year, _ := strconv.Atoi(dates[0])
+	month, _ := strconv.Atoi(dates[1])
+	day, _ := strconv.Atoi(dates[2])
+	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 }

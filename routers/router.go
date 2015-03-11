@@ -7,6 +7,8 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.MainController{})
-	beego.Router("/rooms", &controllers.RoomController{})
-	beego.Router("/roombookings", &controllers.RoomBookingController{})
+	beego.Router("/room", &controllers.RoomController{})
+	beego.Router("/roombooking", &controllers.RoomBookingController{}, "get:List")
+	beego.Router("/roombooking/:id([0-9]+", &controllers.RoomBookingController{}, "get:Show")
+	beego.Router("/roombooking/:id([0-9]+", &controllers.RoomBookingController{}, "post:Update")
 }

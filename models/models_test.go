@@ -76,16 +76,16 @@ func (suite *ModelsTestSuite) TestFindOptionRate() {
 
 func (suite *ModelsTestSuite) TestGetAvailableRoom() {
 	hotelSystem := suite.MockHotelSystem()
-	rooms := hotelSystem.GetAvailableRoom(suite.CheckInDate, suite.CheckOutDate)
+	rooms := hotelSystem.GetAvailableRoom("2015-03-15", "2015-03-16")
 	suite.NotNil(rooms)
-	suite.Len(rooms, 46)
+	suite.Len(rooms, 48)
 }
 
 func (suite *ModelsTestSuite) TestBooking() {
 	hotelSystem := suite.MockHotelSystem()
 	selectedRooms := []string{"101", "301"}
 	extraBeds := []bool{true, false}
-	roomBooking := hotelSystem.ReserveRoom(selectedRooms, extraBeds, suite.CheckInDate, suite.CheckOutDate)
+	roomBooking := hotelSystem.ReserveRoom(selectedRooms, extraBeds, "2015-03-15", "2015-03-16")
 
 	suite.Len(roomBooking.Rooms, 2)
 	suite.Equal(roomBooking.CheckInDate, suite.CheckInDate)
@@ -109,4 +109,9 @@ func (suite *ModelsTestSuite) TestRoomBookingDiffDayError() {
 	diffDay, err := rb.diffDay(suite.CheckOutDate, suite.CheckInDate)
 	suite.Equal(diffDay, 0)
 	suite.NotNil(err)
+}
+
+func (suite *ModelsTestSuite) TestStringToDate() {
+	hotelSystem := &HotelSystem{}
+	suite.Equal(hotelSystem.stringToDate("2015-03-01"), time.Date(2015, 3, 1, 0, 0, 0, 0, time.UTC))
 }

@@ -15,17 +15,17 @@ Home
         <h3 class="panel-title">Search</h3>
     </div>
     <div class="panel-body">
-    <form class="form-horizontal">
+    <form class="form-horizontal" id="SearchRoom" method="GET" action="/">
     <div class="form-group">
-      <label for="inputEmail3" class="col-sm-2 control-label">Check-in</label>
+      <label for="inputCheckInDate" class="col-sm-2 control-label">Check-in</label>
       <div class="col-sm-10">
-        <input ui-date="dateOptions" name="CheckInDate">
+        <input id="inputCheckInDate" ui-date="dateOptions" name="CheckInDate" value="{{< .SearchRoom.CheckInDate >}}">
       </div>
     </div>
     <div class="form-group">
-      <label for="inputEmail3" class="col-sm-2 control-label">Check-out</label>
+      <label for="inputCheckOutDate" class="col-sm-2 control-label">Check-out</label>
       <div class="col-sm-10">
-        <input ui-date="dateOptions" name="CheckOutDate">
+        <input id="inputCheckOutDate" ui-date="dateOptions" name="CheckOutDate" value="{{< .SearchRoom.CheckOutDate >}}">
       </div>
     </div>
     <div class="form-group">
@@ -39,26 +39,39 @@ Home
 
   <div>
     <h4>Results</h4>
+    <form id="SelectdRoom" method="POST" action="/" >
+      <input type="hidden" name="CheckInDate" value="{{< .SearchRoom.CheckInDate >}}">
+      <input type="hidden" name="CheckOutDate" value="{{< .SearchRoom.CheckOutDate >}}">
+      <input type="submit" class="btn btn-primary" value="Book" />
     <table class="table table-striped">
         <thead>
+            <th></th>
             <th>Room No.</th>
+            <th>Extra Bed</th>
             <th>Floor</th>
             <th>Room Type</th>
             <th>Rate per room per night</th>
-            <th></th>
         </thead>
         {{< range .Rooms >}}
         <tr>
+          <td><input type="checkbox" name="RoomNo[]" value="{{< .RoomNo >}}" ng-model="no{{< .RoomNo >}}" /></td>
           <td>{{< .RoomNo >}}</td>
+          <td>
+            <div ng-show="no{{< .RoomNo >}}">
+              <input type="checkbox" ng-model="extra{{< .RoomNo >}}" />
+              <input  type='hidden' ng-disabled="no{{< .RoomNo >}} != true" value='{{extra{{< .RoomNo >}}}}' name='ExtraBed[]'>
+            </div>
+          </td>
           <td>{{< .Floor >}}</td>
           <td>{{< .RoomType.Name >}}</td>
           <td>{{< .RoomType.Rate >}}</td>
-          <td><input type="button" class="btn btn-primary" value="Book" /></td>
         </tr>
         {{< end >}}
       </table>
+    </form>
   </div>
 </div>
+
 {{< end >}}
 
 {{< define "js" >}}

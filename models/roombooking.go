@@ -8,7 +8,8 @@ import (
 
 type RoomBooking struct {
 	RoomBookingNo  string
-	CustomerName   string
+	Firstname      string
+	Lastname       string
 	CardID         string
 	ContactNo      string
 	CheckInDate    time.Time
@@ -21,6 +22,7 @@ type RoomBooking struct {
 	ExtraBeds      []bool
 	Receipt        *Receipt
 	Refund         *Refund
+	ExtraBedRate   float32
 	Amount         float32
 	Vat            float32
 	GrandTotal     float32
@@ -66,7 +68,8 @@ func (rb *RoomBooking) ReserveRoom(
 	for _, room := range rooms {
 		totalPrice += room.RoomType.Rate
 	}
-
+	rb.ExtraBedRate = extraBedRate
+	rb.ExtraBeds = extraBeds
 	for _, extraBed := range extraBeds {
 		if extraBed {
 			totalPrice += extraBedRate

@@ -25,7 +25,7 @@ Room Bookings
         </thead>
         {{< range $index, $rb := .RoomBookings >}}
         <tr>
-          <td>{{< $rb.RoomBookingNo >}}</td>
+          <td><a href="/roombooking/{{< $rb.RoomBookingNo >}}">{{< $rb.RoomBookingNo >}}</a></td>
           <td>[{{< range $rm := $rb.Rooms >}}
             {{< $rm.RoomNo >}}
           {{< end >}}
