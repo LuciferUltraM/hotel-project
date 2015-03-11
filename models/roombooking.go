@@ -21,27 +21,25 @@ type RoomBooking struct {
 	ExtraBeds      []bool
 	Receipt        *Receipt
 	Refund         *Refund
-	amount         float32
-	vat            float32
-	grandTotal     float32
+	Amount         float32
+	Vat            float32
+	GrandTotal     float32
 }
 
 func (rb *RoomBooking) GetAmount() float32 {
-	return rb.amount
+	return rb.Amount
 }
 
 func (rb *RoomBooking) GetVat() float32 {
-	return rb.vat
+	return rb.Vat
 }
 
 func (rb *RoomBooking) GetGrandTotal() float32 {
-	return rb.grandTotal
+	return rb.GrandTotal
 }
 
 func (rb *RoomBooking) setRoomBookingNo(t time.Time) {
-	rb.RoomBookingNo = fmt.Sprintf("%d%02d%02d%02d%02d%02d",
-		t.Year(), t.Month(), t.Day(),
-		t.Hour(), t.Minute(), t.Second())
+	rb.RoomBookingNo = fmt.Sprintf("%d", t.UnixNano())
 }
 
 func (rb *RoomBooking) ReserveRoom(
@@ -52,10 +50,12 @@ func (rb *RoomBooking) ReserveRoom(
 	checkInDate time.Time,
 	checkOutDate time.Time) error {
 
+	rb.Rooms = rooms
 	rb.BookingDate = time.Now()
 	rb.setRoomBookingNo(rb.BookingDate)
 	rb.CheckInDate = checkInDate
 	rb.CheckOutDate = checkOutDate
+
 	diffDay, err := rb.diffDay(rb.CheckInDate, rb.CheckOutDate)
 	if err != nil {
 		return err
@@ -89,15 +89,15 @@ func (rb *RoomBooking) diffDay(checkInDate time.Time, checkOutDate time.Time) (d
 }
 
 func (rb *RoomBooking) setAmount(amount float32, vatRate float32) {
-	rb.amount = amount
+	rb.Amount = amount
 	rb.calculateVat(vatRate)
 	rb.sumGrandTotal()
 }
 
 func (rb *RoomBooking) calculateVat(vatRate float32) {
-	rb.vat = rb.amount * vatRate / 100
+	rb.Vat = rb.Amount * vatRate / 100
 }
 
 func (rb *RoomBooking) sumGrandTotal() {
-	rb.grandTotal = rb.amount + rb.vat
+	rb.GrandTotal = rb.Amount + rb.Vat
 }

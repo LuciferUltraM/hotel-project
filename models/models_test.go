@@ -18,13 +18,17 @@ type ModelsTestSuite struct {
 	NumberOfCustomer int
 }
 
+func TestModelsTestSuite(t *testing.T) {
+	suite.Run(t, new(ModelsTestSuite))
+}
+
 func (suite *ModelsTestSuite) SetupTest() {
 	suite.CustomerName = "Nat Ton"
 	suite.CardID = "1709912345678"
 	suite.Tel = "0895555555"
 	suite.Nationality = "Thai"
-	suite.CheckInDate = time.Date(2015, 3, 10, 0, 0, 0, 0, time.UTC)
-	suite.CheckOutDate = time.Date(2015, 3, 13, 0, 0, 0, 0, time.UTC)
+	suite.CheckInDate = time.Date(2015, 3, 15, 0, 0, 0, 0, time.UTC)
+	suite.CheckOutDate = time.Date(2015, 3, 16, 0, 0, 0, 0, time.UTC)
 
 	suite.NumberOfCustomer = 2
 }
@@ -70,17 +74,24 @@ func (suite *ModelsTestSuite) TestFindOptionRate() {
 	suite.Equal(optionRate.GetRate(), 7)
 }
 
-func (suite *ModelsTestSuite) TestBooking() {
-	var hotel *HotelSystem
-	hotel = suite.MockHotelSystem()
-	selectedRooms := []string{"101", "102"}
-	extraBeds := []bool{true, false}
-	roomBooking := hotel.ReserveRoom(selectedRooms, extraBeds, suite.CheckInDate, suite.CheckOutDate)
+func (suite *ModelsTestSuite) TestGetRoomAvailable() {
+	hotelSystem := suite.MockHotelSystem()
+	rooms := hotelSystem.GetRoomAvailable(suite.CheckInDate, suite.CheckOutDate)
+	suite.NotNil(rooms)
+	suite.Len(rooms, 46)
+}
 
+func (suite *ModelsTestSuite) TestBooking() {
+	hotelSystem := suite.MockHotelSystem()
+	selectedRooms := []string{"101", "301"}
+	extraBeds := []bool{true, false}
+	roomBooking := hotelSystem.ReserveRoom(selectedRooms, extraBeds, suite.CheckInDate, suite.CheckOutDate)
+
+	suite.Len(roomBooking.Rooms, 2)
 	suite.Equal(roomBooking.CheckInDate, suite.CheckInDate)
 	suite.Equal(roomBooking.CheckOutDate, suite.CheckOutDate)
-
-	amount := float32(21600)
+	suite.Equal(roomBooking.NightAmount, 1)
+	amount := float32(8200 * 1)
 	suite.Equal(roomBooking.GetAmount(), amount)
 	suite.Equal(roomBooking.GetVat(), amount*7/100)
 	suite.Equal(roomBooking.GetGrandTotal(), amount+roomBooking.GetVat())
@@ -89,7 +100,7 @@ func (suite *ModelsTestSuite) TestBooking() {
 func (suite *ModelsTestSuite) TestRoomBookingDiffDay() {
 	rb := &RoomBooking{}
 	diffDay, err := rb.diffDay(suite.CheckInDate, suite.CheckOutDate)
-	suite.Equal(diffDay, 3)
+	suite.Equal(diffDay, 1)
 	suite.Nil(err)
 }
 
@@ -98,8 +109,4 @@ func (suite *ModelsTestSuite) TestRoomBookingDiffDayError() {
 	diffDay, err := rb.diffDay(suite.CheckOutDate, suite.CheckInDate)
 	suite.Equal(diffDay, 0)
 	suite.NotNil(err)
-}
-
-func TestModelsTestSuite(t *testing.T) {
-	suite.Run(t, new(ModelsTestSuite))
 }

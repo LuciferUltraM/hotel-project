@@ -1,96 +1,75 @@
-<!DOCTYPE html>
+{{< template "layout.tpl" . >}}
 
-<html>
-  	<head>
-    	<title>Beego</title>
-    	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{{< define "title" >}}
+Home
+{{< end >}}
 
-		<style type="text/css">
-			body {
-				margin: 0px;
-				font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-				font-size: 14px;
-				line-height: 20px;
-				color: rgb(51, 51, 51);
-				background-color: rgb(255, 255, 255);
-			}
+{{< define "css" >}}
 
-			.hero-unit {
-				padding: 60px;
-				margin-bottom: 30px;
-				border-radius: 6px 6px 6px 6px;
-			}
+{{< end >}}
 
-			.container {
-				width: 940px;
-				margin-right: auto;
-				margin-left: auto;
-			}
+{{< define "content" >}}
+<div ng-controller="HotelCtrl">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Search</h3>
+    </div>
+    <div class="panel-body">
+    <form class="form-horizontal">
+    <div class="form-group">
+      <label for="inputEmail3" class="col-sm-2 control-label">Check-in</label>
+      <div class="col-sm-10">
+        <input ui-date="dateOptions" name="CheckInDate">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputEmail3" class="col-sm-2 control-label">Check-out</label>
+      <div class="col-sm-10">
+        <input ui-date="dateOptions" name="CheckOutDate">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-default">Search</button>
+      </div>
+    </div>
+    </form>
+    </div>
+  </div>
 
-			.row {
-				margin-left: -20px;
-			}
+  <div>
+    <h4>Results</h4>
+    <table class="table table-striped">
+        <thead>
+            <th>Room No.</th>
+            <th>Floor</th>
+            <th>Room Type</th>
+            <th>Rate per room per night</th>
+            <th></th>
+        </thead>
+        {{< range .Rooms >}}
+        <tr>
+          <td>{{< .RoomNo >}}</td>
+          <td>{{< .Floor >}}</td>
+          <td>{{< .RoomType.Name >}}</td>
+          <td>{{< .RoomType.Rate >}}</td>
+          <td><input type="button" class="btn btn-primary" value="Book" /></td>
+        </tr>
+        {{< end >}}
+      </table>
+  </div>
+</div>
+{{< end >}}
 
-			h1 {
-				margin: 10px 0px;
-				font-family: inherit;
-				font-weight: bold;
-				text-rendering: optimizelegibility;
-			}
-
-			.hero-unit h1 {
-				margin-bottom: 0px;
-				font-size: 60px;
-				line-height: 1;
-				letter-spacing: -1px;
-				color: inherit;
-			}
-
-			.description {
-				padding-top: 5px;
-				padding-left: 5px;
-				font-size: 18px;
-				font-weight: 200;
-				line-height: 30px;
-				color: inherit;
-			}
-
-			p {
-				margin: 0px 0px 10px;
-			}
-		</style>
-	</head>
-
-  	<body>
-  		<header class="hero-unit" style="background-color:#A9F16C">
-			<div class="container">
-			<div class="row">
-			  <div class="hero-text">
-			    <h1>Welcome to Hiso Hotel!</h1>
-			    <p class="description">
-			    	Beego is a simple & powerful Go web framework which is inspired by tornado and sinatra.
-			    <br />
-			    	Official website: <a href="http://{{<.Website>}}">{{<.Website>}}</a>
-			    <br />
-			    	Contact me: {{<.Email>}}
-			    </p>
-          <ul>
-            {{< range .RoomTypes >}}
-            <li>
-              {{< .Name >}}
-            </li>
-            {{< end >}}
-          </ul>
-          <ul>
-            {{< range .Rooms >}}
-            <li>
-              Room No. {{< .RoomNo >}}, Fl. {{< .Floor >}}, Type {{< .RoomType.Name >}}
-            </li>
-            {{< end >}}
-          </ul>
-			  </div>
-			</div>
-			</div>
-		</header>
-	</body>
-</html>
+{{< define "js" >}}
+<script>
+app = angular.module('HotelApp', ['ui.date']);
+app.controller('HotelCtrl', function ($scope) {
+  $scope.dateOptions = {
+          changeYear: true,
+          changeMonth: true,
+          dateFormat: 'yy-mm-dd',
+  };
+});
+</script>
+{{< end >}}

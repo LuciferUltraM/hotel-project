@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Hiso Hotel</title>
+    <title>Hiso Hotel :: {{< template "title" . >}}</title>
 
     <!-- Bootstrap core CSS -->
     <link href="static/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -51,9 +51,9 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/rooms">Room</a></li>
+            <li><a href="/roombookings">Room Booking</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">

@@ -5,13 +5,14 @@ import (
 	"github.com/code-mobi/hotel/models"
 )
 
-type MainController struct {
+type RoomController struct {
 	beego.Controller
 }
 
-func (c *MainController) Get() {
-	c.TplNames = "index.tpl"
-
+func (c *RoomController) Get() {
 	hotel := models.GetInstance()
+
+	c.TplNames = "rooms/index.tpl"
+
 	c.Data["Rooms"] = hotel.Rooms
 }
