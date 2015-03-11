@@ -88,7 +88,7 @@ func (hotel *HotelSystem) FindOptionRate(optionName string) *OptionRate {
 	return hotel.OptionRates[optionName]
 }
 
-func (hotel *HotelSystem) GetRoomAvailable(checkInDate time.Time, checkOutDate time.Time) (rooms map[string]*Room) {
+func (hotel *HotelSystem) GetAvailableRoom(checkInDate time.Time, checkOutDate time.Time) (rooms map[string]*Room) {
 	rooms = hotel.cloneRooms()
 	for _, roomBooking := range hotel.RoomBookings {
 		for checkingDate := roomBooking.CheckInDate; checkingDate.Before(checkOutDate); checkingDate = checkInDate.AddDate(0, 0, 1) {

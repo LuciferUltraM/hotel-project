@@ -74,9 +74,9 @@ func (suite *ModelsTestSuite) TestFindOptionRate() {
 	suite.Equal(optionRate.GetRate(), 7)
 }
 
-func (suite *ModelsTestSuite) TestGetRoomAvailable() {
+func (suite *ModelsTestSuite) TestGetAvailableRoom() {
 	hotelSystem := suite.MockHotelSystem()
-	rooms := hotelSystem.GetRoomAvailable(suite.CheckInDate, suite.CheckOutDate)
+	rooms := hotelSystem.GetAvailableRoom(suite.CheckInDate, suite.CheckOutDate)
 	suite.NotNil(rooms)
 	suite.Len(rooms, 46)
 }
