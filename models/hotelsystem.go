@@ -91,11 +91,18 @@ func (hotel *HotelSystem) FindOptionRate(optionName string) *OptionRate {
 func (hotel *HotelSystem) GetAvailableRoom(checkInDate time.Time, checkOutDate time.Time) (rooms map[string]*Room) {
 	rooms = hotel.cloneRooms()
 	for _, roomBooking := range hotel.RoomBookings {
+		isDeleted := false
 		for checkingDate := roomBooking.CheckInDate; checkingDate.Before(checkOutDate); checkingDate = checkInDate.AddDate(0, 0, 1) {
+			if isDeleted {
+				break
+			}
+
 			bookedDate := roomBooking.CheckInDate
 			for night := 0; night < roomBooking.NightAmount; bookedDate = roomBooking.CheckInDate.AddDate(0, 0, night) {
 				if checkingDate == bookedDate {
 					hotel.deleteAvailableRooms(&rooms, roomBooking.Rooms)
+					isDeleted = true
+					break
 				}
 				night++
 			}
