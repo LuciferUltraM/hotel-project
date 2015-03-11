@@ -13,7 +13,7 @@ Room Bookings
   <div class="panel panel-primary">
     <div class="panel-heading">
         <h3 class="panel-title">Booking No.{{< .RoomBooking.RoomBookingNo >}}
-          <span class="pull-right">Check-in Date {{< .RoomBooking.CheckInDate.Format "2 January" >}} to {{< .RoomBooking.CheckOutDate.Format "2 January" >}}</span></h3>
+          <span class="pull-right">Check-in Date {{< .RoomBooking.CheckInDate.Format "2 January 2006">}} to {{< .RoomBooking.CheckOutDate.Format "2 January 2006">}}</span></h3>
     </div>
     <div class="panel-body">
     <form class="form-horizontal" id="SearchRoom" method="POST" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}">
@@ -35,11 +35,19 @@ Room Bookings
         <input id="inputCardID" type="text" name="CardID" value="{{< .RoomBooking.CardID >}}">
       </div>
     </div>
+    <div class="form-group">
+      <label  class="col-sm-2 control-label"> Status</label>
+      <div class="col-sm-10">
+        {{< .RoomBooking.Status >}}
+      </div>
+    </div>
 
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary" name="action">Confirm</button>
-        <button type="submit" class="btn btn-primary" name="action">Action</button>
+
+        <button  class="btn btn-primary" name="action" type="submit" value="confirm">Comfirm</button>
+        <button  class="btn btn-warning" name="action" type="submit" value="cancel">Cancel</button>
+        
       </div>
     </div>
 
@@ -49,7 +57,9 @@ Room Bookings
             <th>Floor</th>
             <th>Room Type</th>
             <th>Extra Bed</th>
-            <th>Rate per room per night</th>
+            <th>Rate per night</th>
+            <th>Night</th>
+            <th>Amount (THB)</th>
         </thead>
         <tbody>
           {{< range $index, $room := .RoomBooking.Rooms >}}
@@ -69,25 +79,32 @@ Room Bookings
                 + {{< $.RoomBooking.ExtraBedRate >}}
               {{< end >}}
             </td>
+            <td>
+              {{< $.RoomBooking.NightAmount >}}
+            </td>
+            <td class="text-right">{{
+              {{<if index $.RoomBooking.ExtraBeds $index>}}
+                ({{<$room.RoomType.Rate>}} + {{<$.RoomBooking.ExtraBedRate>}}) * {{<$.RoomBooking.NightAmount>}}
+              {{< else >}}
+                {{<$room.RoomType.Rate>}} * {{<$.RoomBooking.NightAmount>}}
+              {{< end >}}
+              }}
+            </td>
           </tr>
           {{< end >}}
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="4">Night</td>
-            <td>{{< .RoomBooking.NightAmount >}}</td>
+            <td colspan="6"><strong>Amount</strong></td>
+            <td class="text-right"><strong>{{< .RoomBooking.Amount >}}</strong></td>
           </tr>
           <tr>
-            <td colspan="4">Amount</td>
-            <td>{{< .RoomBooking.Amount >}}</td>
+            <td colspan="6"><strong>Vat</strong></td>
+            <td class="text-right"><strong>{{< .RoomBooking.Vat >}}</strong></td>
           </tr>
           <tr>
-            <td colspan="4">Vat</td>
-            <td>{{< .RoomBooking.Vat >}}</td>
-          </tr>
-          <tr>
-            <td colspan="4">Grand Total</td>
-            <td>{{< .RoomBooking.GrandTotal >}}</td>
+            <td colspan="6"><strong>Grand Total</strong></td>
+            <td class="text-right"><strong>{{< .RoomBooking.GrandTotal >}}</strong></td>
           </tr>
         </tfoot>
       </table>
@@ -98,4 +115,9 @@ Room Bookings
 {{< end >}}
 
 {{< define "js" >}}
+<script>
+app = angular.module('HotelApp', []);
+app.controller('HotelCtrl', function ($scope) {
+});
+</script>
 {{< end >}}

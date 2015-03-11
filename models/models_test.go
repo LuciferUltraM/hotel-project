@@ -42,7 +42,7 @@ func (suite *ModelsTestSuite) MockHotelSystem() *HotelSystem {
 func (suite *ModelsTestSuite) TestHotelSystem() {
 	hotelSystem := suite.MockHotelSystem()
 	suite.Len(hotelSystem.RoomTypes, 3)
-	suite.Len(hotelSystem.Rooms, 50)
+	suite.Len(hotelSystem.Rooms, 25)
 	suite.Equal(hotelSystem.Rooms["101"].RoomType, hotelSystem.RoomTypes[0])
 }
 
@@ -78,16 +78,17 @@ func (suite *ModelsTestSuite) TestGetAvailableRoom() {
 	hotelSystem := suite.MockHotelSystem()
 	rooms := hotelSystem.GetAvailableRoom("2015-03-15", "2015-03-16")
 	suite.NotNil(rooms)
-	suite.Len(rooms, 48)
+	suite.Len(rooms, 23)
 }
 
-func (suite *ModelsTestSuite) TestBooking() {
+func (suite *ModelsTestSuite) TestBooking() *RoomBooking {
 	hotelSystem := suite.MockHotelSystem()
 	selectedRooms := []string{"101", "301"}
 	extraBeds := []bool{true, false}
 	roomBooking := hotelSystem.ReserveRoom(selectedRooms, extraBeds, "2015-03-15", "2015-03-16")
 
 	suite.Len(roomBooking.Rooms, 2)
+	suite.Len(roomBooking.ExtraBeds, 2)
 	suite.Equal(roomBooking.CheckInDate, suite.CheckInDate)
 	suite.Equal(roomBooking.CheckOutDate, suite.CheckOutDate)
 	suite.Equal(roomBooking.NightAmount, 1)
@@ -95,6 +96,16 @@ func (suite *ModelsTestSuite) TestBooking() {
 	suite.Equal(roomBooking.GetAmount(), amount)
 	suite.Equal(roomBooking.GetVat(), amount*7/100)
 	suite.Equal(roomBooking.GetGrandTotal(), amount+roomBooking.GetVat())
+	suite.Equal(roomBooking.Status, "Booking")
+	return roomBooking
+}
+
+func (suite *ModelsTestSuite) TestConfirmBooking() {
+	roomBooking := suite.TestBooking()
+	roomBooking.ConfirmBooking("Natt", "Ton", "1709999999999")
+	suite.Equal(roomBooking.Firstname, "Natt")
+	suite.Equal(roomBooking.Lastname, "Ton")
+	suite.Equal(roomBooking.Status, "Confirm")
 }
 
 func (suite *ModelsTestSuite) TestRoomBookingDiffDay() {

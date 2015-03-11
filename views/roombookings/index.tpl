@@ -19,9 +19,8 @@ Room Bookings
             <th>Check-in Date</th>
             <th>Check-out Date</th>
             <th>Night</th>
-            <th>Amount</th>
-            <th>Vat</th>
             <th>Grand Total</th>
+            <th>Status</th>
         </thead>
         {{< range $index, $rb := .RoomBookings >}}
         <tr>
@@ -30,12 +29,11 @@ Room Bookings
             {{< $rm.RoomNo >}}
           {{< end >}}
           ]</td>
-          <td>{{< $rb.CheckInDate >}}</td>
-          <td>{{< $rb.CheckOutDate >}}</td>
+          <td>{{< $rb.CheckInDate.Format "2 January 2006" >}}</td>
+          <td>{{< $rb.CheckOutDate.Format "2 January 2006" >}}</td>
           <td>{{< $rb.NightAmount >}}</td>
-          <td>{{< $rb.Amount >}}</td>
-          <td>{{< $rb.Vat >}}</td>
           <td>{{< $rb.GrandTotal >}}</td>
+          <td>{{< $rb.Status >}}</td>
         </tr>
         {{< end >}}
       </table>
@@ -44,4 +42,9 @@ Room Bookings
 {{< end >}}
 
 {{< define "js" >}}
+<script>
+app = angular.module('HotelApp', []);
+app.controller('HotelCtrl', function ($scope) {
+});
+</script>
 {{< end >}}

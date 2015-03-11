@@ -52,7 +52,7 @@ func (hotel *HotelSystem) InitSampleRooms(roomTypes []*RoomType) map[string]*Roo
 			roomType = roomTypes[2]
 		}
 
-		for n := 1; n < 11; n++ {
+		for n := 1; n < 6; n++ {
 			roomNo := fmt.Sprintf("%d%02d", f, n)
 			rooms[roomNo] = &Room{roomNo, strconv.Itoa(f), "OK", roomType}
 		}
@@ -87,6 +87,10 @@ func (hotel *HotelSystem) FindOptionRate(optionName string) *OptionRate {
 
 func (hotel *HotelSystem) FindRoomBooking(roomBookingNo string) *RoomBooking {
 	return hotel.RoomBookings[roomBookingNo]
+}
+
+func (hotel *HotelSystem) DeleteRoomBooking(roomBookingNo string) {
+	delete(hotel.RoomBookings, roomBookingNo)
 }
 
 func (hotel *HotelSystem) GetAvailableRoom(checkIn string, checkOut string) (rooms map[string]*Room) {

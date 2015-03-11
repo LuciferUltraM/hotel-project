@@ -12,7 +12,7 @@ Home
 <div ng-controller="HotelCtrl">
   <div class="panel panel-primary">
     <div class="panel-heading">
-        <h3 class="panel-title">Search</h3>
+        <h3 class="panel-title">Search Available Rooms</h3>
     </div>
     <div class="panel-body">
     <form class="form-horizontal" id="SearchRoom" method="GET" action="/">
@@ -30,19 +30,20 @@ Home
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-default">Search</button>
+        <button type="submit" class="btn btn-primary">Search</button>
       </div>
     </div>
     </form>
     </div>
   </div>
 
+  {{< if .Rooms >}}
   <div>
-    <h4>Results</h4>
     <form id="SelectdRoom" method="POST" action="/" >
       <input type="hidden" name="CheckInDate" value="{{< .SearchRoom.CheckInDate >}}">
       <input type="hidden" name="CheckOutDate" value="{{< .SearchRoom.CheckOutDate >}}">
-      <input type="submit" class="btn btn-primary" value="Book" />
+
+    <div class="pull-right"><input type="submit" class="btn btn-success" value="Book" /></div>
     <table class="table table-striped">
         <thead>
             <th></th>
@@ -70,6 +71,7 @@ Home
       </table>
     </form>
   </div>
+  {{< end >}}
 </div>
 
 {{< end >}}

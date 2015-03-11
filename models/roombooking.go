@@ -44,6 +44,31 @@ func (rb *RoomBooking) setRoomBookingNo(t time.Time) {
 	rb.RoomBookingNo = fmt.Sprintf("%d", t.UnixNano())
 }
 
+func (rb *RoomBooking) diffDay(checkInDate time.Time, checkOutDate time.Time) (diffDay int, err error) {
+	if checkInDate.Before(checkOutDate) {
+		for d := checkInDate; d.Before(checkOutDate); d = d.AddDate(0, 0, 1) {
+			diffDay++
+		}
+	} else {
+		err = errors.New("checkInDate should before checkOutDate")
+	}
+	return
+}
+
+func (rb *RoomBooking) setAmount(amount float32, vatRate float32) {
+	rb.Amount = amount
+	rb.calculateVat(vatRate)
+	rb.sumGrandTotal()
+}
+
+func (rb *RoomBooking) calculateVat(vatRate float32) {
+	rb.Vat = rb.Amount * vatRate / 100
+}
+
+func (rb *RoomBooking) sumGrandTotal() {
+	rb.GrandTotal = rb.Amount + rb.Vat
+}
+
 func (rb *RoomBooking) ReserveRoom(
 	extraBedRate float32,
 	vatRate float32,
@@ -77,30 +102,13 @@ func (rb *RoomBooking) ReserveRoom(
 	}
 
 	rb.setAmount(totalPrice*float32(diffDay), vatRate)
+	rb.Status = "Booking"
 	return nil
 }
 
-func (rb *RoomBooking) diffDay(checkInDate time.Time, checkOutDate time.Time) (diffDay int, err error) {
-	if checkInDate.Before(checkOutDate) {
-		for d := checkInDate; d.Before(checkOutDate); d = d.AddDate(0, 0, 1) {
-			diffDay++
-		}
-	} else {
-		err = errors.New("checkInDate should before checkOutDate")
-	}
-	return
-}
-
-func (rb *RoomBooking) setAmount(amount float32, vatRate float32) {
-	rb.Amount = amount
-	rb.calculateVat(vatRate)
-	rb.sumGrandTotal()
-}
-
-func (rb *RoomBooking) calculateVat(vatRate float32) {
-	rb.Vat = rb.Amount * vatRate / 100
-}
-
-func (rb *RoomBooking) sumGrandTotal() {
-	rb.GrandTotal = rb.Amount + rb.Vat
+func (rb *RoomBooking) ConfirmBooking(firstname string, lastname string, cardID string) {
+	rb.Firstname = firstname
+	rb.Lastname = lastname
+	rb.CardID = cardID
+	rb.Status = "Confirm"
 }
