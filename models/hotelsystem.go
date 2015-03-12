@@ -87,13 +87,14 @@ func (hotel *HotelSystem) InitSampleOptionRate() map[string]*OptionRate {
 }
 
 func (hotel *HotelSystem) InitSampleRoomBooking() {
+	receptionist := hotel.FindReceptionist("1234")
 	selectedRooms := []string{"102", "203"}
 	extraBeds := []bool{true, false}
-	hotel.ReserveRoom("1234", selectedRooms, extraBeds, "2015-03-13", "2015-03-15")
+	hotel.ReserveRoom(receptionist, selectedRooms, extraBeds, "2015-03-13", "2015-03-15")
 
 	selectedRooms2 := []string{"205", "504"}
 	extraBeds2 := []bool{false, false}
-	hotel.ReserveRoom("1234", selectedRooms2, extraBeds2, "2015-03-13", "2015-03-17")
+	hotel.ReserveRoom(receptionist, selectedRooms2, extraBeds2, "2015-03-13", "2015-03-17")
 }
 
 func (hotel *HotelSystem) FindReceptionist(username string) *Receptionist {
@@ -142,12 +143,11 @@ func (hotel *HotelSystem) GetAvailableRoom(checkIn string, checkOut string) (roo
 }
 
 func (hotel *HotelSystem) ReserveRoom(
-	receptionistUsername string,
+	receptionist *Receptionist,
 	selectedRooms []string,
 	extraBeds []bool,
 	checkIn string,
 	checkOut string) *RoomBooking {
-	receptionist := hotel.FindReceptionist(receptionistUsername)
 	checkInDate := hotel.stringToDate(checkIn)
 	checkOutDate := hotel.stringToDate(checkOut)
 	extraBedRate := hotel.FindOptionRate("extra_bed")

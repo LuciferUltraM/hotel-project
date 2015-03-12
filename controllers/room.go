@@ -1,12 +1,9 @@
 package controllers
 
-import (
-	"github.com/astaxie/beego"
-	"github.com/code-mobi/hotel/models"
-)
+import "github.com/code-mobi/hotel/models"
 
 type RoomController struct {
-	beego.Controller
+	BaseController
 }
 
 func (c *RoomController) Get() {

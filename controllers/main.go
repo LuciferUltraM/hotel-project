@@ -40,6 +40,7 @@ func (c *MainController) Get() {
 }
 
 func (c *MainController) Post() {
+	user := c.GetUserLogin()
 	c.TplNames = "apps/booking.tpl"
 	hotel := models.GetInstance()
 	searchRoom := SearchRoom{}
@@ -54,6 +55,6 @@ func (c *MainController) Post() {
 	extraBeds := make([]bool, 0, 2)
 	c.Ctx.Input.Bind(&extraBeds, "ExtraBed")
 
-	roomBooking := hotel.ReserveRoom("1234", roomNos, extraBeds, searchRoom.CheckInDate, searchRoom.CheckOutDate)
+	roomBooking := hotel.ReserveRoom(user, roomNos, extraBeds, searchRoom.CheckInDate, searchRoom.CheckOutDate)
 	c.Redirect(fmt.Sprintf("/roombooking/%s", roomBooking.RoomBookingNo), 302)
 }

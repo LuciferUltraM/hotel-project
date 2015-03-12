@@ -59,7 +59,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           {{< if .User.FirstName >}}
           <div  class="pull-right">
-            <a class="navbar" href="#">{{< .User.FirstName >}} {{< .User.LastName >}}</a>
+            <h5 class="navbar">{{< .User.FirstName >}} {{< .User.LastName >}} <a class="btn btn-warning" href="/logout">Sign out</a></h5>
           </div>
           {{< else >}}
           <form class="navbar-form navbar-right" method="POST" action="/login">

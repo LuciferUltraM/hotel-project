@@ -5,7 +5,7 @@ import (
 	"github.com/code-mobi/hotel/models"
 )
 
-type LoginController struct {
+type AuthenController struct {
 	beego.Controller
 }
 
@@ -14,7 +14,7 @@ type FormLogin struct {
 	Password string
 }
 
-func (c *LoginController) Post() {
+func (c *AuthenController) Post() {
 	login := FormLogin{}
 	if err := c.ParseForm(&login); err != nil {
 		c.Redirect("/", 302)
@@ -27,7 +27,7 @@ func (c *LoginController) Post() {
 	c.Redirect("/", 302)
 }
 
-func (c *LoginController) Delete() {
+func (c *AuthenController) Delete() {
 	c.DelSession("username")
 	c.Redirect("/", 302)
 }

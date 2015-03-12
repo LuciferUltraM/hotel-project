@@ -92,13 +92,13 @@ func (suite *ModelsTestSuite) TestGetAvailableRoom() {
 }
 
 func (suite *ModelsTestSuite) TestBooking() *RoomBooking {
-	receptionist := "1234"
+	receptionist := suite.hotelSystem.FindReceptionist("1234")
 	selectedRooms := []string{"101", "301"}
 	extraBeds := []bool{true, false}
 	checkIn := "2015-03-15"
 	checkOut := "2015-03-16"
 	roomBooking := suite.hotelSystem.ReserveRoom(receptionist, selectedRooms, extraBeds, checkIn, checkOut)
-	suite.Equal(roomBooking.CreatedBy, suite.hotelSystem.FindReceptionist(receptionist))
+	suite.Equal(roomBooking.CreatedBy, receptionist)
 	suite.Len(roomBooking.Rooms, 2)
 	suite.Len(roomBooking.ExtraBeds, 2)
 	suite.Equal(roomBooking.CheckInDate, suite.CheckInDate)
