@@ -13,7 +13,16 @@ $ go get github.com/code-mobi/hotel
 
 ```sh
 $ cd $GOPATH/src/github.com/code-mobi/hotel
+```
+
+```
 $ bee run
+```
+
+or
+
+```
+$ go run main.go
 ```
 
 Go To http://localhost:8080
