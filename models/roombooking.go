@@ -27,6 +27,15 @@ type RoomBooking struct {
 	GrandTotal     float32
 	Refund         float32
 	CreatedBy      *Receptionist
+	CheckIn        *CheckIn
+	CheckOut       *CheckOut
+}
+
+type RoomBookingStatus struct {
+	IsNew      bool
+	IsSuccess  bool
+	IsCheckIn  bool
+	IsCheckOut bool
 }
 
 func (rb *RoomBooking) GetAmount() float32 {
@@ -114,5 +123,16 @@ func (rb *RoomBooking) ConfirmBooking(firstName string, lastName string, cardID 
 	rb.LastName = lastName
 	rb.CardID = cardID
 	rb.ContactNo = contactNo
-	rb.Status = "Confirm"
+}
+
+func (rb *RoomBooking) ProcessCheckIn(deposit float32) {
+	rb.Status = "CheckIn"
+	now := time.Now()
+	rb.CheckIn = &CheckIn{now.UnixNano(), now, deposit}
+}
+
+func (rb *RoomBooking) ProcessCheckOut(fine float32) {
+	rb.Status = "CheckOut"
+	now := time.Now()
+	rb.CheckOut = &CheckOut{now.UnixNano(), now, fine}
 }

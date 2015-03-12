@@ -13,4 +13,8 @@ func init() {
 	beego.Router("/roombooking", &controllers.RoomBookingController{}, "get:List")
 	beego.Router("/roombooking/:id([0-9]+", &controllers.RoomBookingController{}, "get:Show")
 	beego.Router("/roombooking/:id([0-9]+", &controllers.RoomBookingController{}, "post:Update")
+	beego.Router("/roombooking/:id([0-9]+/payment", &controllers.RoomBookingController{}, "get:NewPayment")
+	beego.Router("/roombooking/:id([0-9]+/payment", &controllers.RoomBookingController{}, "post:SavePayment")
+	beego.Router("/receipt", &controllers.ReceiptController{})
+
 }

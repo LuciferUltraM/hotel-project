@@ -24,10 +24,10 @@ func (c *AuthenController) Post() {
 	if user != nil && login.Password == user.Password {
 		c.SetSession("username", user.UserName)
 	}
-	c.Redirect("/", 302)
+	c.Redirect(c.Ctx.Input.Referer(), 302)
 }
 
 func (c *AuthenController) Delete() {
 	c.DelSession("username")
-	c.Redirect("/", 302)
+	c.Redirect(c.Ctx.Input.Referer(), 302)
 }

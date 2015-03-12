@@ -83,6 +83,7 @@ func (hotel *HotelSystem) InitSampleOptionRate() map[string]*OptionRate {
 	optionRates := make(map[string]*OptionRate)
 	optionRates["extra_bed"] = &OptionRate{"extra_bed", 1200}
 	optionRates["vat_rate"] = &OptionRate{"vat_rate", 7}
+	optionRates["deposit"] = &OptionRate{"deposit", 3000}
 	return optionRates
 }
 
@@ -90,11 +91,13 @@ func (hotel *HotelSystem) InitSampleRoomBooking() {
 	receptionist := hotel.FindReceptionist("1234")
 	selectedRooms := []string{"102", "203"}
 	extraBeds := []bool{true, false}
-	hotel.ReserveRoom(receptionist, selectedRooms, extraBeds, "2015-03-13", "2015-03-15")
+	roombooking := hotel.ReserveRoom(receptionist, selectedRooms, extraBeds, "2015-03-13", "2015-03-15")
+	roombooking.ConfirmBooking("Toon", "Narakjung", "4323294837216", "0896528743")
 
 	selectedRooms2 := []string{"205", "504"}
 	extraBeds2 := []bool{false, false}
-	hotel.ReserveRoom(receptionist, selectedRooms2, extraBeds2, "2015-03-13", "2015-03-17")
+	roombooking2 := hotel.ReserveRoom(receptionist, selectedRooms2, extraBeds2, "2015-03-13", "2015-03-17")
+	roombooking2.ConfirmBooking("Ging", "Gonggong", "7629847192213", "0894927314")
 }
 
 func (hotel *HotelSystem) FindReceptionist(username string) *Receptionist {
@@ -166,10 +169,10 @@ func (hotel *HotelSystem) ReserveRoom(
 	return roomBooking
 }
 
-func (hotel *HotelSystem) PayForRoomBooking(roomBookingNo string, paymentOption string) *Receipt {
+func (hotel *HotelSystem) PaymentRoomBooking(roomBookingNo string, paymentOption string) *Receipt {
 	receipt := &Receipt{}
 	now := time.Now()
-	receipt.ReceiptNo = string(now.UnixNano())
+	receipt.ReceiptNo = fmt.Sprintf("%d", now.UnixNano())
 	receipt.ReceiptDate = now
 	roomBooking := hotel.FindRoomBooking(roomBookingNo)
 	receipt.RoomBooking = roomBooking
@@ -201,4 +204,13 @@ func (hotel *HotelSystem) stringToDate(dateStr string) time.Time {
 	month, _ := strconv.Atoi(dates[1])
 	day, _ := strconv.Atoi(dates[2])
 	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
+}
+
+func (hotel *HotelSystem) GetRoomBookingStatus(roomBooking *RoomBooking) *RoomBookingStatus {
+	return &RoomBookingStatus{
+		roomBooking.Status == "New",
+		roomBooking.Status == "Success",
+		roomBooking.Status == "CheckIn",
+		roomBooking.Status == "CheckOut",
+	}
 }

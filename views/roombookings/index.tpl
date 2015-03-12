@@ -16,6 +16,7 @@ Room Bookings
         <thead>
             <th>Booking No.</th>
             <th>Room</th>
+            <th>Customer Name</th>
             <th>Check-in Date</th>
             <th>Check-out Date</th>
             <th>Night</th>
@@ -29,6 +30,7 @@ Room Bookings
             {{< $rm.RoomNo >}}
           {{< end >}}
           ]</td>
+          <td>{{< $rb.FirstName >}} {{< $rb.LastName >}}</td>
           <td>{{< $rb.CheckInDate.Format "2 January 2006" >}}</td>
           <td>{{< $rb.CheckOutDate.Format "2 January 2006" >}}</td>
           <td>{{< $rb.NightAmount >}}</td>

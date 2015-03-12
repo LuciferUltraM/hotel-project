@@ -7,9 +7,8 @@ type RoomController struct {
 }
 
 func (c *RoomController) Get() {
-	hotel := models.GetInstance()
-
+	c.GetUserLogin()
 	c.TplNames = "rooms/index.tpl"
-
-	c.Data["Rooms"] = hotel.Rooms
+	hotelSystem := models.GetInstance()
+	c.Data["Rooms"] = hotelSystem.Rooms
 }

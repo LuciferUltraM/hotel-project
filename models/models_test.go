@@ -82,6 +82,9 @@ func (suite *ModelsTestSuite) TestFindOptionRate() {
 	optionRate = suite.hotelSystem.FindOptionRate("vat_rate")
 	suite.Equal(optionRate.GetName(), "vat_rate")
 	suite.Equal(optionRate.GetRate(), 7)
+	optionRate = suite.hotelSystem.FindOptionRate("deposit")
+	suite.Equal(optionRate.GetName(), "deposit")
+	suite.Equal(optionRate.GetRate(), 3000)
 }
 
 func (suite *ModelsTestSuite) TestGetAvailableRoom() {
@@ -122,11 +125,11 @@ func (suite *ModelsTestSuite) TestConfirmBooking() (roomBooking *RoomBooking) {
 	return
 }
 
-func (suite *ModelsTestSuite) TestPayForRoomBooking() {
-	roomBooking := suite.TestConfirmBooking()
+func (suite *ModelsTestSuite) TestPaymentRoomBooking() (roomBooking *RoomBooking) {
+	roomBooking = suite.TestConfirmBooking()
 	suite.NotNil(roomBooking)
 	var receipt *Receipt
-	receipt = suite.hotelSystem.PayForRoomBooking(roomBooking.RoomBookingNo, "Cash")
+	receipt = suite.hotelSystem.PaymentRoomBooking(roomBooking.RoomBookingNo, "Cash")
 	suite.NotNil(receipt)
 	suite.Equal(receipt.RoomBooking, roomBooking)
 	suite.NotEmpty(receipt.ReceiptNo)
@@ -135,6 +138,29 @@ func (suite *ModelsTestSuite) TestPayForRoomBooking() {
 	suite.Equal(receipt.Amount, roomBooking.GrandTotal)
 	suite.Equal(receipt.Type, "Cash")
 	suite.Equal(roomBooking.Status, "Success")
+	return
+}
+
+func (suite *ModelsTestSuite) TestProcessCheckIn() (roomBooking *RoomBooking) {
+	roomBooking = suite.TestPaymentRoomBooking()
+	roomBooking.ProcessCheckIn(3000)
+	suite.Equal(roomBooking.Status, "CheckIn")
+	suite.NotNil(roomBooking.CheckIn)
+	suite.NotNil(roomBooking.CheckIn.CheckInNo)
+	suite.NotNil(roomBooking.CheckIn.CheckInDate)
+	suite.Equal(roomBooking.CheckIn.Deposit, 3000)
+	return
+}
+
+func (suite *ModelsTestSuite) TestProcessCheckOut() (roomBooking *RoomBooking) {
+	roomBooking = suite.TestProcessCheckIn()
+	roomBooking.ProcessCheckOut(3000)
+	suite.Equal(roomBooking.Status, "CheckOut")
+	suite.NotNil(roomBooking.CheckOut)
+	suite.NotNil(roomBooking.CheckOut.CheckOutNo)
+	suite.NotNil(roomBooking.CheckOut.CheckOutDate)
+	suite.Equal(roomBooking.CheckOut.Fine, 3000)
+	return
 }
 
 func (suite *ModelsTestSuite) TestRoomBookingDiffDay() {

@@ -54,10 +54,11 @@
             <li><a href="/">Home</a></li>
             <li><a href="/room">Room</a></li>
             <li><a href="/roombooking">Room Booking</a></li>
+            <li><a href="/receipt">Receipt</a></li>
           </ul>
         </div><!--/.nav-collapse -->
         <div id="navbar" class="navbar-collapse collapse">
-          {{< if .User.FirstName >}}
+          {{< if .User >}}
           <div  class="pull-right">
             <h5 class="navbar">{{< .User.FirstName >}} {{< .User.LastName >}} <a class="btn btn-warning" href="/logout">Sign out</a></h5>
           </div>

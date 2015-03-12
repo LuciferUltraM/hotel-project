@@ -16,29 +16,28 @@ Room Bookings
           <span class="pull-right">Check-in Date {{< .RoomBooking.CheckInDate.Format "2 January 2006">}} to {{< .RoomBooking.CheckOutDate.Format "2 January 2006">}}</span></h3>
     </div>
     <div class="panel-body">
-    <form class="form-horizontal" id="SearchRoom" method="POST" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}">
     <div class="form-group">
       <label for="inputFirstName" class="col-sm-2 control-label">First Name</label>
       <div class="col-sm-10">
-        <input id="inputFirstName" type="text" name="FirstName" value="{{< .RoomBooking.FirstName >}}">
+        <h5>{{< .RoomBooking.FirstName >}}</h5>
       </div>
     </div>
     <div class="form-group">
       <label for="inputLastname" class="col-sm-2 control-label">Last Name</label>
       <div class="col-sm-10">
-        <input id="inputLastname" type="text" name="LastName" value="{{< .RoomBooking.LastName >}}">
+        <h5>{{< .RoomBooking.LastName >}}</h5>
       </div>
     </div>
     <div class="form-group">
       <label for="inputCardID" class="col-sm-2 control-label"> Card ID / Passport ID</label>
       <div class="col-sm-10">
-        <input id="inputCardID" type="text" name="CardID" value="{{< .RoomBooking.CardID >}}">
+        <h5>{{< .RoomBooking.CardID >}}</h5>
       </div>
     </div>
     <div class="form-group">
       <label for="inputCardID" class="col-sm-2 control-label"> Contact No.</label>
       <div class="col-sm-10">
-        <input id="inputCardID" type="text" name="ContactNo" value="{{< .RoomBooking.ContactNo >}}">
+        <h5>{{< .RoomBooking.ContactNo >}}</h5>
       </div>
     </div>
     <div class="form-group">
@@ -47,16 +46,7 @@ Room Bookings
         {{< .RoomBooking.Status >}}
       </div>
     </div>
-    {{<if .User >}}
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
 
-        <button  class="btn btn-primary" name="action" type="submit" value="confirm">Comfirm</button>
-        <button  class="btn btn-warning" name="action" type="submit" value="cancel">Cancel</button>
-
-      </div>
-    </div>
-    {{< end >}}
     <table class="table table-striped">
         <thead>
             <th>Room No.</th>
@@ -114,7 +104,35 @@ Room Bookings
           </tr>
         </tfoot>
       </table>
-    </form>
+      {{< if and .User .RoomBookingStatus.IsNew >}}
+      <form class="form-horizontal" id="SearchRoom" method="POST" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}/payment">
+        <div class="form-group">
+          <label  class="col-sm-2 control-label"> Payment Option</label>
+          <div class="col-sm-10">
+            <button  class="btn btn-primary" name="PaymentOption" type="submit" value="Cash">Cash</button>
+            <button  class="btn btn-success" name="PaymentOption" type="submit" value="Credit Card">Credit Card</button>
+          </div>
+        </div>
+      </form>
+      {{< end >}}
+      {{< if and .User .RoomBookingStatus.IsSuccess >}}
+      <form class="form-horizontal" id="SearchRoom" method="POST" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}/checkin">
+        <div class="form-group">
+          <div class="col-sm-12">
+            <button  class="btn btn-primary" type="submit">Check-in</button>
+          </div>
+        </div>
+      </form>
+      {{< end >}}
+      {{< if and .User .RoomBookingStatus.IsCheckIn >}}
+      <form class="form-horizontal" id="SearchRoom" method="POST" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}/checkout">
+        <div class="form-group">
+          <div class="col-sm-12">
+            <button  class="btn btn-danger" type="submit">Check-out</button>
+          </div>
+        </div>
+      </form>
+      {{< end >}}
     </div>
   </div>
 </div>
