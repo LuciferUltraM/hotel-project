@@ -122,7 +122,7 @@ func (suite *ModelsTestSuite) TestConfirmBooking() (roomBooking *RoomBooking) {
 	return
 }
 
-func (suite *ModelsTestSuite) TestPaymentBooking() {
+func (suite *ModelsTestSuite) TestPayForRoomBooking() {
 	roomBooking := suite.TestConfirmBooking()
 	suite.NotNil(roomBooking)
 	var receipt *Receipt
