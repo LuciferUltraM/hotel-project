@@ -49,13 +49,30 @@
           </button>
           <a class="navbar-brand" href="#">Hiso Hotel</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
+        <div id="navbar" class="navbar-header navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li><a href="/">Home</a></li>
             <li><a href="/room">Room</a></li>
             <li><a href="/roombooking">Room Booking</a></li>
           </ul>
         </div><!--/.nav-collapse -->
+        <div id="navbar" class="navbar-collapse collapse">
+          {{< if .User.FirstName >}}
+          <div  class="pull-right">
+            <a class="navbar" href="#">{{< .User.FirstName >}} {{< .User.LastName >}}</a>
+          </div>
+          {{< else >}}
+          <form class="navbar-form navbar-right" method="POST" action="/login">
+            <div class="form-group">
+              <input type="text" name="UserName" placeholder="User Name" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" name="Password" placeholder="Password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+          </form>
+          {{< end >}}
+        </div><!--/.navbar-collapse -->
       </div>
     </nav>
 

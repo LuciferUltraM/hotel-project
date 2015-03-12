@@ -8,8 +8,8 @@ import (
 
 type RoomBooking struct {
 	RoomBookingNo  string
-	Firstname      string
-	Lastname       string
+	FirstName      string
+	LastName       string
 	CardID         string
 	ContactNo      string
 	CheckInDate    time.Time
@@ -21,11 +21,12 @@ type RoomBooking struct {
 	Rooms          []*Room
 	ExtraBeds      []bool
 	Receipt        *Receipt
-	Refund         *Refund
 	ExtraBedRate   float32
 	Amount         float32
 	Vat            float32
 	GrandTotal     float32
+	Refund         float32
+	CreatedBy      *Receptionist
 }
 
 func (rb *RoomBooking) GetAmount() float32 {
@@ -70,6 +71,7 @@ func (rb *RoomBooking) sumGrandTotal() {
 }
 
 func (rb *RoomBooking) ReserveRoom(
+	receptionist *Receptionist,
 	extraBedRate float32,
 	vatRate float32,
 	rooms []*Room,
@@ -77,6 +79,7 @@ func (rb *RoomBooking) ReserveRoom(
 	checkInDate time.Time,
 	checkOutDate time.Time) error {
 
+	rb.CreatedBy = receptionist
 	rb.Rooms = rooms
 	rb.BookingDate = time.Now()
 	rb.setRoomBookingNo(rb.BookingDate)
@@ -102,13 +105,14 @@ func (rb *RoomBooking) ReserveRoom(
 	}
 
 	rb.setAmount(totalPrice*float32(diffDay), vatRate)
-	rb.Status = "Booking"
+	rb.Status = "New"
 	return nil
 }
 
-func (rb *RoomBooking) ConfirmBooking(firstname string, lastname string, cardID string) {
-	rb.Firstname = firstname
-	rb.Lastname = lastname
+func (rb *RoomBooking) ConfirmBooking(firstName string, lastName string, cardID string, contactNo string) {
+	rb.FirstName = firstName
+	rb.LastName = lastName
 	rb.CardID = cardID
+	rb.ContactNo = contactNo
 	rb.Status = "Confirm"
 }

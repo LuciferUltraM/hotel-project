@@ -17,15 +17,15 @@ Home
     <div class="panel-body">
     <form class="form-horizontal" id="SearchRoom" method="GET" action="/">
     <div class="form-group">
-      <label for="inputCheckInDate" class="col-sm-2 control-label">Check-in</label>
+      <label for="inputCheckInDate" class="col-sm-2 control-label">Check-in Date</label>
       <div class="col-sm-10">
-        <input id="inputCheckInDate" ui-date="dateOptions" name="CheckInDate" value="{{< .SearchRoom.CheckInDate >}}">
+        <input id="inputCheckInDate" ui-date="checkInDateOptions" name="CheckInDate" ng-model="CheckInDate"  ng-change="changeCheckInDate()" value="{{< .SearchRoom.CheckInDate >}}">
       </div>
     </div>
     <div class="form-group">
-      <label for="inputCheckOutDate" class="col-sm-2 control-label">Check-out</label>
+      <label for="inputCheckOutDate" class="col-sm-2 control-label">Check-out Date</label>
       <div class="col-sm-10">
-        <input id="inputCheckOutDate" ui-date="dateOptions" name="CheckOutDate" value="{{< .SearchRoom.CheckOutDate >}}">
+        <input id="inputCheckOutDate" ui-date="checkOutDateOptions" name="CheckOutDate" ng-model="CheckOutDate" value="{{< .SearchRoom.CheckOutDate >}}">
       </div>
     </div>
     <div class="form-group">
@@ -42,8 +42,9 @@ Home
     <form id="SelectdRoom" method="POST" action="/" >
       <input type="hidden" name="CheckInDate" value="{{< .SearchRoom.CheckInDate >}}">
       <input type="hidden" name="CheckOutDate" value="{{< .SearchRoom.CheckOutDate >}}">
-
-    <div class="pull-right"><input type="submit" class="btn btn-success" value="Book" /></div>
+      {{< if .User.FirstName >}}
+        <div class="pull-right"><input type="submit" class="btn btn-success" value="Book" /></div>
+      {{< end >}}
     <table class="table table-striped">
         <thead>
             <th></th>
@@ -55,7 +56,7 @@ Home
         </thead>
         {{< range .Rooms >}}
         <tr>
-          <td><input type="checkbox" name="RoomNo[]" value="{{< .RoomNo >}}" ng-model="no{{< .RoomNo >}}" /></td>
+          <td><input type="checkbox" name="RoomNo[]" value="{{< .RoomNo >}}" ng-model="no{{< .RoomNo >}}"/></td>
           <td>{{< .RoomNo >}}</td>
           <td>
             <div ng-show="no{{< .RoomNo >}}">
@@ -80,11 +81,28 @@ Home
 <script>
 app = angular.module('HotelApp', ['ui.date']);
 app.controller('HotelCtrl', function ($scope) {
-  $scope.dateOptions = {
+  var today = new Date()
+  var tomorrow = new Date(today)
+  tomorrow.setDate(today.getDate()+1);
+
+  $scope.checkInDateOptions = {
           changeYear: true,
           changeMonth: true,
           dateFormat: 'yy-mm-dd',
+          minDate: today,
   };
+  $scope.checkOutDateOptions = {
+          changeYear: true,
+          changeMonth: true,
+          dateFormat: 'yy-mm-dd',
+          minDate: tomorrow,
+  };
+  $scope.CheckInDate = today;
+  $scope.CheckOutDate = tomorrow;
+
+  $scope.changeCheckInDate = function() {
+    $scope.checkOutDateOptions.minDate.setDate($scope.CheckInDate.getDate() + 1);
+  }
 });
 </script>
 {{< end >}}

@@ -20,19 +20,25 @@ Room Bookings
     <div class="form-group">
       <label for="inputFirstName" class="col-sm-2 control-label">First Name</label>
       <div class="col-sm-10">
-        <input id="inputFirstName" type="text" name="Firstname" value="{{< .RoomBooking.Firstname >}}">
+        <input id="inputFirstName" type="text" name="FirstName" value="{{< .RoomBooking.FirstName >}}">
       </div>
     </div>
     <div class="form-group">
       <label for="inputLastname" class="col-sm-2 control-label">Last Name</label>
       <div class="col-sm-10">
-        <input id="inputLastname" type="text" name="Lastname" value="{{< .RoomBooking.Lastname >}}">
+        <input id="inputLastname" type="text" name="LastName" value="{{< .RoomBooking.LastName >}}">
       </div>
     </div>
     <div class="form-group">
       <label for="inputCardID" class="col-sm-2 control-label"> Card ID / Passport ID</label>
       <div class="col-sm-10">
         <input id="inputCardID" type="text" name="CardID" value="{{< .RoomBooking.CardID >}}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputCardID" class="col-sm-2 control-label"> Contact No.</label>
+      <div class="col-sm-10">
+        <input id="inputCardID" type="text" name="ContactNo" value="{{< .RoomBooking.ContactNo >}}">
       </div>
     </div>
     <div class="form-group">
@@ -47,7 +53,7 @@ Room Bookings
 
         <button  class="btn btn-primary" name="action" type="submit" value="confirm">Comfirm</button>
         <button  class="btn btn-warning" name="action" type="submit" value="cancel">Cancel</button>
-        
+
       </div>
     </div>
 

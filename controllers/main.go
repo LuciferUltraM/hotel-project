@@ -3,12 +3,11 @@ package controllers
 import (
 	"fmt"
 
-	"github.com/astaxie/beego"
 	"github.com/code-mobi/hotel/models"
 )
 
 type MainController struct {
-	beego.Controller
+	BaseController
 }
 
 type SearchRoom struct {
@@ -27,6 +26,7 @@ type RoomBookingForm struct {
 }
 
 func (c *MainController) Get() {
+	c.GetUserLogin()
 	c.TplNames = "index.tpl"
 	hotelSystem := models.GetInstance()
 	searchRoom := SearchRoom{}
@@ -54,6 +54,6 @@ func (c *MainController) Post() {
 	extraBeds := make([]bool, 0, 2)
 	c.Ctx.Input.Bind(&extraBeds, "ExtraBed")
 
-	roomBooking := hotel.ReserveRoom(roomNos, extraBeds, searchRoom.CheckInDate, searchRoom.CheckOutDate)
+	roomBooking := hotel.ReserveRoom("1234", roomNos, extraBeds, searchRoom.CheckInDate, searchRoom.CheckOutDate)
 	c.Redirect(fmt.Sprintf("/roombooking/%s", roomBooking.RoomBookingNo), 302)
 }

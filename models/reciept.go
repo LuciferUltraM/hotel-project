@@ -5,6 +5,8 @@ import "time"
 type Receipt struct {
 	ReceiptNo   int
 	ReceiptDate time.Time
+	Status      string
 	Amount      float32
-	CreateDate  time.Time
+	Type        string
+	RoomBooking *RoomBooking
 }

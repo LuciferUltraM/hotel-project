@@ -8,10 +8,12 @@ import (
 )
 
 type HotelSystem struct {
-	RoomTypes    []*RoomType
-	Rooms        map[string]*Room
-	OptionRates  map[string]*OptionRate
-	RoomBookings map[string]*RoomBooking
+	Receptionists map[string]*Receptionist
+	RoomTypes     []*RoomType
+	Rooms         map[string]*Room
+	OptionRates   map[string]*OptionRate
+	RoomBookings  map[string]*RoomBooking
+	Equipments    map[string]*Equipment
 }
 
 var instantiated *HotelSystem = nil
@@ -25,11 +27,26 @@ func GetInstance() *HotelSystem {
 }
 
 func (hotel *HotelSystem) InitInstance() {
+	hotel.InitSampleReceptionist()
 	hotel.RoomBookings = make(map[string]*RoomBooking)
 	hotel.RoomTypes = hotel.InitSampleRoomTypes()
 	hotel.Rooms = hotel.InitSampleRooms(hotel.RoomTypes)
 	hotel.OptionRates = hotel.InitSampleOptionRate()
 	hotel.InitSampleRoomBooking()
+}
+
+func (hotel *HotelSystem) InitSampleReceptionist() {
+	hotel.Receptionists = make(map[string]*Receptionist)
+	receptionist := &Receptionist{}
+	receptionist.EmployeeNo = 1234
+	receptionist.FirstName = "Natt"
+	receptionist.LastName = "Ton"
+	receptionist.Gender = "M"
+	receptionist.BirthDate = time.Date(1987, 5, 13, 0, 0, 0, 0, time.UTC)
+	receptionist.UserName = "1234"
+	receptionist.Password = "4321"
+	hotel.Receptionists[receptionist.UserName] = receptionist
+	return
 }
 
 func (hotel *HotelSystem) InitSampleRoomTypes() []*RoomType {
@@ -70,11 +87,15 @@ func (hotel *HotelSystem) InitSampleOptionRate() map[string]*OptionRate {
 func (hotel *HotelSystem) InitSampleRoomBooking() {
 	selectedRooms := []string{"102", "203"}
 	extraBeds := []bool{true, false}
-	hotel.ReserveRoom(selectedRooms, extraBeds, "2015-03-13", "2015-03-15")
+	hotel.ReserveRoom("1234", selectedRooms, extraBeds, "2015-03-13", "2015-03-15")
 
 	selectedRooms2 := []string{"205", "504"}
 	extraBeds2 := []bool{false, false}
-	hotel.ReserveRoom(selectedRooms2, extraBeds2, "2015-03-13", "2015-03-17")
+	hotel.ReserveRoom("1234", selectedRooms2, extraBeds2, "2015-03-13", "2015-03-17")
+}
+
+func (hotel *HotelSystem) FindReceptionist(username string) *Receptionist {
+	return hotel.Receptionists[username]
 }
 
 func (hotel *HotelSystem) FindRoom(roomNo string) *Room {
@@ -119,10 +140,12 @@ func (hotel *HotelSystem) GetAvailableRoom(checkIn string, checkOut string) (roo
 }
 
 func (hotel *HotelSystem) ReserveRoom(
+	receptionistUsername string,
 	selectedRooms []string,
 	extraBeds []bool,
 	checkIn string,
 	checkOut string) *RoomBooking {
+	receptionist := hotel.FindReceptionist(receptionistUsername)
 	checkInDate := hotel.stringToDate(checkIn)
 	checkOutDate := hotel.stringToDate(checkOut)
 	extraBedRate := hotel.FindOptionRate("extra_bed")
@@ -132,7 +155,7 @@ func (hotel *HotelSystem) ReserveRoom(
 		rooms = append(rooms, hotel.FindRoom(roomNo))
 	}
 	roomBooking := &RoomBooking{}
-	err := roomBooking.ReserveRoom(extraBedRate.GetRate(), vatRate.GetRate(), rooms, extraBeds, checkInDate, checkOutDate)
+	err := roomBooking.ReserveRoom(receptionist, extraBedRate.GetRate(), vatRate.GetRate(), rooms, extraBeds, checkInDate, checkOutDate)
 	if err != nil {
 		panic(err)
 	}

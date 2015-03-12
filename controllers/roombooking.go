@@ -14,13 +14,6 @@ type RoomBookingStatus struct {
 	Confirm string
 }
 
-func NewRoomBookingStatus() *RoomBookingStatus {
-	rbs := new(RoomBookingStatus)
-	rbs.Booking = "Booking"
-	rbs.Confirm = "Confirm"
-	return rbs
-}
-
 func (c *RoomBookingController) List() {
 	c.TplNames = "roombookings/index.tpl"
 
@@ -36,7 +29,6 @@ func (c *RoomBookingController) Show() {
 	roomBooking := hotel.FindRoomBooking(id)
 	if roomBooking != nil {
 		c.Data["RoomBooking"] = roomBooking
-		c.Data["RoomBookingStatus"] = NewRoomBookingStatus()
 	} else {
 		c.List()
 	}
@@ -50,14 +42,13 @@ func (c *RoomBookingController) Update() {
 	if roomBooking != nil {
 		if action == "confirm" {
 			c.TplNames = "roombookings/booking.tpl"
-			roomBooking.ConfirmBooking(c.GetString("Firstname"), c.GetString("Lastname"), c.GetString("CardID"))
+			roomBooking.ConfirmBooking(c.GetString("FirstName"), c.GetString("LastName"), c.GetString("CardID"), c.GetString("ContactNo"))
 			c.Data["RoomBooking"] = roomBooking
-			c.Data["RoomBookingStatus"] = NewRoomBookingStatus()
 		} else if action == "cancel" {
 			hotel.DeleteRoomBooking(id)
-			c.List()
+			c.Redirect("/", 302)
 		}
 	} else {
-		c.List()
+		c.Redirect("/roombooking", 302)
 	}
 }
