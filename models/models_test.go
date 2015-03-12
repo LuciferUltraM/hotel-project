@@ -9,13 +9,9 @@ import (
 
 type ModelsTestSuite struct {
 	suite.Suite
-	CustomerName     string
-	CardID           string
-	Tel              string
-	Nationality      string
-	CheckInDate      time.Time
-	CheckOutDate     time.Time
-	NumberOfCustomer int
+	hotelSystem  *HotelSystem
+	CheckInDate  time.Time
+	CheckOutDate time.Time
 }
 
 func TestModelsTestSuite(t *testing.T) {
@@ -23,6 +19,7 @@ func TestModelsTestSuite(t *testing.T) {
 }
 
 func (suite *ModelsTestSuite) SetupTest() {
+	suite.hotelSystem = suite.MockHotelSystem()
 	suite.CheckInDate = time.Date(2015, 3, 15, 0, 0, 0, 0, time.UTC)
 	suite.CheckOutDate = time.Date(2015, 3, 16, 0, 0, 0, 0, time.UTC)
 }
@@ -34,15 +31,13 @@ func (suite *ModelsTestSuite) MockHotelSystem() *HotelSystem {
 }
 
 func (suite *ModelsTestSuite) TestHotelSystem() {
-	hotelSystem := suite.MockHotelSystem()
-	suite.Len(hotelSystem.RoomTypes, 3)
-	suite.Len(hotelSystem.Rooms, 25)
-	suite.Equal(hotelSystem.Rooms["101"].RoomType, hotelSystem.RoomTypes[0])
+	suite.Len(suite.hotelSystem.RoomTypes, 3)
+	suite.Len(suite.hotelSystem.Rooms, 25)
+	suite.Equal(suite.hotelSystem.Rooms["101"].RoomType, suite.hotelSystem.RoomTypes[0])
 }
 
 func (suite *ModelsTestSuite) TestReceptionist() *Receptionist {
-	hotelSystem := suite.MockHotelSystem()
-	receptionist := hotelSystem.Receptionists["1234"]
+	receptionist := suite.hotelSystem.Receptionists["1234"]
 	suite.Equal(receptionist.EmployeeNo, 1234)
 	suite.Equal(receptionist.FirstName, "Natt")
 	suite.Equal(receptionist.LastName, "Ton")
@@ -54,8 +49,7 @@ func (suite *ModelsTestSuite) TestReceptionist() *Receptionist {
 }
 
 func (suite *ModelsTestSuite) TestRoomType() {
-	hotelSystem := suite.MockHotelSystem()
-	for _, roomType := range hotelSystem.RoomTypes {
+	for _, roomType := range suite.hotelSystem.RoomTypes {
 		suite.NotEmpty(roomType.Name)
 		suite.NotEqual(0, roomType.Rate)
 		suite.NotEmpty(roomType.Detail)
@@ -63,8 +57,7 @@ func (suite *ModelsTestSuite) TestRoomType() {
 }
 
 func (suite *ModelsTestSuite) TestRoom() {
-	hotelSystem := suite.MockHotelSystem()
-	for _, room := range hotelSystem.Rooms {
+	for _, room := range suite.hotelSystem.Rooms {
 		suite.NotEmpty(room.RoomNo)
 		suite.NotEmpty(room.Floor)
 		suite.NotNil(room.RoomType)
@@ -72,8 +65,7 @@ func (suite *ModelsTestSuite) TestRoom() {
 }
 
 func (suite *ModelsTestSuite) TestFindReceptionist() {
-	hotelSystem := suite.MockHotelSystem()
-	receptionist := hotelSystem.FindReceptionist("1234")
+	receptionist := suite.hotelSystem.FindReceptionist("1234")
 	suite.Equal(receptionist.EmployeeNo, 1234)
 	suite.Equal(receptionist.FirstName, "Natt")
 	suite.Equal(receptionist.LastName, "Ton")
@@ -84,11 +76,10 @@ func (suite *ModelsTestSuite) TestFindReceptionist() {
 }
 
 func (suite *ModelsTestSuite) TestFindOptionRate() {
-	hotelSystem := suite.MockHotelSystem()
-	optionRate := hotelSystem.FindOptionRate("extra_bed")
+	optionRate := suite.hotelSystem.FindOptionRate("extra_bed")
 	suite.Equal(optionRate.GetName(), "extra_bed")
 	suite.Equal(optionRate.GetRate(), 1200)
-	optionRate = hotelSystem.FindOptionRate("vat_rate")
+	optionRate = suite.hotelSystem.FindOptionRate("vat_rate")
 	suite.Equal(optionRate.GetName(), "vat_rate")
 	suite.Equal(optionRate.GetRate(), 7)
 }
@@ -101,14 +92,13 @@ func (suite *ModelsTestSuite) TestGetAvailableRoom() {
 }
 
 func (suite *ModelsTestSuite) TestBooking() *RoomBooking {
-	hotelSystem := suite.MockHotelSystem()
 	receptionist := "1234"
 	selectedRooms := []string{"101", "301"}
 	extraBeds := []bool{true, false}
 	checkIn := "2015-03-15"
 	checkOut := "2015-03-16"
-	roomBooking := hotelSystem.ReserveRoom(receptionist, selectedRooms, extraBeds, checkIn, checkOut)
-	suite.Equal(roomBooking.CreatedBy, hotelSystem.FindReceptionist(receptionist))
+	roomBooking := suite.hotelSystem.ReserveRoom(receptionist, selectedRooms, extraBeds, checkIn, checkOut)
+	suite.Equal(roomBooking.CreatedBy, suite.hotelSystem.FindReceptionist(receptionist))
 	suite.Len(roomBooking.Rooms, 2)
 	suite.Len(roomBooking.ExtraBeds, 2)
 	suite.Equal(roomBooking.CheckInDate, suite.CheckInDate)
@@ -133,9 +123,18 @@ func (suite *ModelsTestSuite) TestConfirmBooking() (roomBooking *RoomBooking) {
 }
 
 func (suite *ModelsTestSuite) TestPaymentBooking() {
-	// roomBooking := suite.TestConfirmBooking()
-	// hotelSystem := suite.MockHotelSystem()
-
+	roomBooking := suite.TestConfirmBooking()
+	suite.NotNil(roomBooking)
+	var receipt *Receipt
+	receipt = suite.hotelSystem.PayForRoomBooking(roomBooking.RoomBookingNo, "Cash")
+	suite.NotNil(receipt)
+	suite.Equal(receipt.RoomBooking, roomBooking)
+	suite.NotEmpty(receipt.ReceiptNo)
+	suite.NotNil(receipt.ReceiptDate)
+	suite.Equal(receipt.Status, "Success")
+	suite.Equal(receipt.Amount, roomBooking.GrandTotal)
+	suite.Equal(receipt.Type, "Cash")
+	suite.Equal(roomBooking.Status, "Success")
 }
 
 func (suite *ModelsTestSuite) TestRoomBookingDiffDay() {
@@ -153,6 +152,5 @@ func (suite *ModelsTestSuite) TestRoomBookingDiffDayError() {
 }
 
 func (suite *ModelsTestSuite) TestStringToDate() {
-	hotelSystem := &HotelSystem{}
-	suite.Equal(hotelSystem.stringToDate("2015-03-01"), time.Date(2015, 3, 1, 0, 0, 0, 0, time.UTC))
+	suite.Equal(suite.hotelSystem.stringToDate("2015-03-01"), time.Date(2015, 3, 1, 0, 0, 0, 0, time.UTC))
 }

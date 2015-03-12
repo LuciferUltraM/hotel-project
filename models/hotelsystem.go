@@ -13,6 +13,7 @@ type HotelSystem struct {
 	Rooms         map[string]*Room
 	OptionRates   map[string]*OptionRate
 	RoomBookings  map[string]*RoomBooking
+	Receipts      map[string]*Receipt
 	Equipments    map[string]*Equipment
 }
 
@@ -33,6 +34,7 @@ func (hotel *HotelSystem) InitInstance() {
 	hotel.Rooms = hotel.InitSampleRooms(hotel.RoomTypes)
 	hotel.OptionRates = hotel.InitSampleOptionRate()
 	hotel.InitSampleRoomBooking()
+	hotel.Receipts = make(map[string]*Receipt)
 }
 
 func (hotel *HotelSystem) InitSampleReceptionist() {
@@ -162,6 +164,21 @@ func (hotel *HotelSystem) ReserveRoom(
 
 	hotel.RoomBookings[roomBooking.RoomBookingNo] = roomBooking
 	return roomBooking
+}
+
+func (hotel *HotelSystem) PayForRoomBooking(roomBookingNo string, paymentOption string) *Receipt {
+	receipt := &Receipt{}
+	now := time.Now()
+	receipt.ReceiptNo = string(now.UnixNano())
+	receipt.ReceiptDate = now
+	roomBooking := hotel.FindRoomBooking(roomBookingNo)
+	receipt.RoomBooking = roomBooking
+	receipt.Type = paymentOption
+	receipt.Amount = roomBooking.GrandTotal
+	receipt.Status = "Success"
+	roomBooking.Status = "Success"
+	hotel.Receipts[receipt.ReceiptNo] = receipt
+	return receipt
 }
 
 func (hotel *HotelSystem) cloneRooms() map[string]*Room {
