@@ -120,7 +120,7 @@ Room Bookings
         </tfoot>
       </table>
       {{< if and .User .RoomBookingStatus.IsNew >}}
-      <form class="form-horizontal" id="SearchRoom" method="POST" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}/payment">
+      <form class="form-horizontal" method="POST" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}/payment">
         <div class="form-group">
           <label  class="col-sm-2 control-label"> Payment Option</label>
           <div class="col-sm-10">
@@ -131,7 +131,7 @@ Room Bookings
       </form>
       {{< end >}}
       {{< if and .User .RoomBookingStatus.IsSuccess >}}
-      <form class="form-horizontal" id="SearchRoom" method="POST" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}/checkin">
+      <form class="form-horizontal" method="POST" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}/checkin">
         <div class="form-group">
           <div class="col-sm-12">
             <button  class="btn btn-primary" type="submit">Check-in</button>
@@ -140,7 +140,7 @@ Room Bookings
       </form>
       {{< end >}}
       {{< if and .User .RoomBookingStatus.IsCheckIn >}}
-      <form class="form-horizontal" id="SearchRoom" method="POST" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}/checkout">
+      <form class="form-horizontal" method="GET" action="/roombooking/{{< .RoomBooking.RoomBookingNo >}}/checkout">
         <div class="form-group">
           <div class="col-sm-12">
             <button  class="btn btn-danger" type="submit">Check-out</button>

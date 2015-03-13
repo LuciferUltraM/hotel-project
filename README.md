@@ -26,3 +26,8 @@ $ go run main.go
 ```
 
 Go To http://localhost:8080
+
+### Test
+
+Username : 1234
+Password : 4321

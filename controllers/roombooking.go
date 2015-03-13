@@ -120,6 +120,13 @@ func (c *RoomBookingController) CheckOut() {
 }
 
 func (c *RoomBookingController) SaveCheckOut() {
+	quantities := make([]string, 0, 2)
+	c.Ctx.Input.Bind(&quantities, "Quantity")
+	fmt.Println(quantities)
+	equmentIDs := make([]string, 0, 2)
+	c.Ctx.Input.Bind(&equmentIDs, "EquipmentID")
+	fmt.Println(equmentIDs)
+
 	c.GetUserLogin()
 	id := c.Ctx.Input.Param(":id")
 	hotelSystem := models.GetInstance()
