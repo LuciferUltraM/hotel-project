@@ -70,7 +70,7 @@ Room Bookings
           <tfoot>
             <tr>
               <td colspan="3"><strong>Grand Total</strong></td>
-              <td><strong>{{GrandTotal}}</strong></td>
+              <td><strong>{{GrandTotal}}<input  type='hidden' name='GrandTotal' value='{{GrandTotal}}'  ></strong></td>
             </tr>
           </tfoot>
         </table>

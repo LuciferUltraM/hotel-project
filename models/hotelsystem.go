@@ -130,6 +130,10 @@ func (hotel *HotelSystem) FindReceipt(receiptNo string) *Receipt {
 	return hotel.Receipts[receiptNo]
 }
 
+func (hotel *HotelSystem) FindEquipment(equipmentID string) *Equipment {
+	return hotel.Equipments[equipmentID]
+}
+
 func (hotel *HotelSystem) DeleteRoomBooking(roomBookingNo string) {
 	delete(hotel.RoomBookings, roomBookingNo)
 }
@@ -234,6 +238,6 @@ func (hotel *HotelSystem) CheckIn(roomBooking *RoomBooking) {
 	roomBooking.ProcessCheckIn(deposit.Rate)
 }
 
-func (hotel *HotelSystem) CheckOut(roomBooking *RoomBooking) {
-
+func (hotel *HotelSystem) CheckOut(roomBooking *RoomBooking, fine float32) {
+	roomBooking.ProcessCheckOut(fine)
 }

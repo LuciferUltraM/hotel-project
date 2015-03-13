@@ -62,6 +62,29 @@ Room Bookings
     </div>
     {{<end>}}
 
+    {{<if .RoomBooking.CheckOut>}}
+      <div class="form-group">
+        <label  class="col-sm-2 control-label">Check-out</label>
+        <div class="col-sm-10">
+          <h5>{{< .RoomBooking.CheckOut.CheckOutDate.Format "2 January 2006 at 3:04pm" >}}</h5>
+        </div>
+      </div>
+      <div class="form-group">
+        <label  class="col-sm-2 control-label">Fine</label>
+        <div class="col-sm-10">
+          <h5>{{< .RoomBooking.CheckOut.Fine>}}</h5>
+        </div>
+      </div>
+      {{<end>}}
+        {{<if and .RoomBooking.CheckIn .RoomBooking.CheckOut>}}
+          <div class="form-group">
+            <label  class="col-sm-2 control-label">Pay back</label>
+            <div class="col-sm-10">
+              <h5>{{{{< .RoomBooking.CheckIn.Deposit>}} - {{< .RoomBooking.CheckOut.Fine>}}}}</h5>
+            </div>
+          </div>
+        {{<end>}}
+
     <table class="table table-striped">
         <thead>
             <th>Room No.</th>

@@ -120,20 +120,25 @@ func (c *RoomBookingController) CheckOut() {
 }
 
 func (c *RoomBookingController) SaveCheckOut() {
-	quantities := make([]string, 0, 2)
-	c.Ctx.Input.Bind(&quantities, "Quantity")
-	fmt.Println(quantities)
-	equmentIDs := make([]string, 0, 2)
-	c.Ctx.Input.Bind(&equmentIDs, "EquipmentID")
-	fmt.Println(equmentIDs)
+	hotelSystem, roomBooking, err := c.GetShow()
+	if err != nil {
+		return
+	}
 
-	c.GetUserLogin()
-	id := c.Ctx.Input.Param(":id")
-	hotelSystem := models.GetInstance()
-	roomBooking := hotelSystem.FindRoomBooking(id)
-	if roomBooking != nil {
-		c.Data["RoomBooking"] = roomBooking
-	} else {
-		c.Redirect("/", 302)
+	quantities := make([]float32, 0, 2)
+	c.Ctx.Input.Bind(&quantities, "Quantity")
+
+	equipmentIDs := make([]string, 0, 2)
+	c.Ctx.Input.Bind(&equipmentIDs, "EquipmentID")
+
+	fine := float32(0)
+	for k, _ := range equipmentIDs {
+		equipment := hotelSystem.FindEquipment(equipmentIDs[k])
+		fine += (equipment.Price * quantities[k])
+	}
+
+	if err == nil {
+		hotelSystem.CheckOut(roomBooking, fine)
+		c.Data["RoomBookingStatus"] = hotelSystem.GetRoomBookingStatus(roomBooking)
 	}
 }
