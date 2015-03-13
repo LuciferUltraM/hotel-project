@@ -55,13 +55,17 @@
             <li><a href="/room">Room</a></li>
             <li><a href="/roombooking">Room Booking</a></li>
             <li><a href="/receipt">Receipt</a></li>
+            <li><a href="/equipment">Equipment</a></li>
           </ul>
         </div><!--/.nav-collapse -->
         <div id="navbar" class="navbar-collapse collapse">
           {{< if .User >}}
-          <div  class="pull-right">
-            <h5 class="navbar">{{< .User.FirstName >}} {{< .User.LastName >}} <a class="btn btn-warning" href="/logout">Sign out</a></h5>
-          </div>
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              {{< .User.FirstName >}} {{< .User.LastName >}}
+            </div>
+            <a class="btn btn-warning" href="/logout">Sign out</a></h5>
+          </form>
           {{< else >}}
           <form class="navbar-form navbar-right" method="POST" action="/login">
             <div class="form-group">

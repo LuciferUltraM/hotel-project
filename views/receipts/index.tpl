@@ -12,7 +12,6 @@ Room
 <div ng-controller="HotelCtrl">
   <div>
     <h4>Receipt</h4>
-    {{< .Flash >}}
     <table class="table table-striped">
         <thead>
             <th>Receipt No.</th>
@@ -25,7 +24,7 @@ Room
         </thead>
         {{< range .Receipts >}}
         <tr>
-          <td>{{< .ReceiptNo >}}</td>
+          <td><a href="/receipt/{{< .ReceiptNo >}}">{{< .ReceiptNo >}}</td>
           <td><a href="/roombooking/{{< .RoomBooking.RoomBookingNo >}}">{{< .RoomBooking.RoomBookingNo >}}</a></td>
           <td>{{< .RoomBooking.FirstName >}} {{< .RoomBooking.LastName >}}</td>
           <td>{{< .ReceiptDate.Format "2 January 2006 at 3:04pm" >}}</td>

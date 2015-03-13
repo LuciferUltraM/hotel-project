@@ -43,7 +43,7 @@ Home
       <input type="hidden" name="CheckInDate" value="{{< .SearchRoom.CheckInDate >}}">
       <input type="hidden" name="CheckOutDate" value="{{< .SearchRoom.CheckOutDate >}}">
       {{< if .User.FirstName >}}
-        <div class="pull-right"><input type="submit" class="btn btn-success" value="Book" /></div>
+        <div class="col-sm-12"><h4>Action : <input type="submit" class="btn btn-success" value="Book" /></h4></div>
       {{< end >}}
     <table class="table table-striped">
         <thead>

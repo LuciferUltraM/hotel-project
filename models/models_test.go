@@ -64,6 +64,16 @@ func (suite *ModelsTestSuite) TestRoom() {
 	}
 }
 
+func (suite *ModelsTestSuite) TestEquipment() {
+	suite.NotNil(suite.hotelSystem.Equipments)
+	suite.Len(suite.hotelSystem.Equipments, 5)
+	for id, equip := range suite.hotelSystem.Equipments {
+		suite.Equal(equip.ID, id)
+		suite.NotEmpty(equip.Name)
+		suite.NotEqual(equip.Price, 0)
+	}
+}
+
 func (suite *ModelsTestSuite) TestFindReceptionist() {
 	receptionist := suite.hotelSystem.FindReceptionist("1234")
 	suite.Equal(receptionist.EmployeeNo, 1234)

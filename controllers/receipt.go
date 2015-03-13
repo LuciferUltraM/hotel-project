@@ -14,5 +14,14 @@ func (c *ReceiptController) Get() {
 }
 
 func (c *ReceiptController) Show() {
-
+	c.GetUserLogin()
+	c.TplNames = "receipts/show.tpl"
+	id := c.Ctx.Input.Param(":id")
+	hotelSystem := models.GetInstance()
+	receipt := hotelSystem.FindReceipt(id)
+	if receipt != nil {
+		c.Data["Receipt"] = receipt
+	} else {
+		c.Redirect("/", 302)
+	}
 }

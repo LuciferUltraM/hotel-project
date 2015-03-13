@@ -35,6 +35,7 @@ func (hotel *HotelSystem) InitInstance() {
 	hotel.OptionRates = hotel.InitSampleOptionRate()
 	hotel.InitSampleRoomBooking()
 	hotel.Receipts = make(map[string]*Receipt)
+	hotel.InitSampleEquipment()
 }
 
 func (hotel *HotelSystem) InitSampleReceptionist() {
@@ -100,6 +101,15 @@ func (hotel *HotelSystem) InitSampleRoomBooking() {
 	roombooking2.ConfirmBooking("Ging", "Gonggong", "7629847192213", "0894927314")
 }
 
+func (hotel *HotelSystem) InitSampleEquipment() {
+	hotel.Equipments = make(map[string]*Equipment)
+	hotel.Equipments["1"] = &Equipment{"1", "Water", 20}
+	hotel.Equipments["2"] = &Equipment{"2", "Snack", 30}
+	hotel.Equipments["3"] = &Equipment{"3", "Beer", 100}
+	hotel.Equipments["4"] = &Equipment{"4", "Glass", 100}
+	hotel.Equipments["5"] = &Equipment{"5", "TV", 4000}
+}
+
 func (hotel *HotelSystem) FindReceptionist(username string) *Receptionist {
 	return hotel.Receptionists[username]
 }
@@ -114,6 +124,10 @@ func (hotel *HotelSystem) FindOptionRate(optionName string) *OptionRate {
 
 func (hotel *HotelSystem) FindRoomBooking(roomBookingNo string) *RoomBooking {
 	return hotel.RoomBookings[roomBookingNo]
+}
+
+func (hotel *HotelSystem) FindReceipt(receiptNo string) *Receipt {
+	return hotel.Receipts[receiptNo]
 }
 
 func (hotel *HotelSystem) DeleteRoomBooking(roomBookingNo string) {
@@ -213,4 +227,13 @@ func (hotel *HotelSystem) GetRoomBookingStatus(roomBooking *RoomBooking) *RoomBo
 		roomBooking.Status == "CheckIn",
 		roomBooking.Status == "CheckOut",
 	}
+}
+
+func (hotel *HotelSystem) CheckIn(roomBooking *RoomBooking) {
+	deposit := hotel.FindOptionRate("deposit")
+	roomBooking.ProcessCheckIn(deposit.Rate)
+}
+
+func (hotel *HotelSystem) CheckOut(roomBooking *RoomBooking) {
+
 }

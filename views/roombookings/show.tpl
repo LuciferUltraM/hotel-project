@@ -29,23 +29,38 @@ Room Bookings
       </div>
     </div>
     <div class="form-group">
-      <label for="inputCardID" class="col-sm-2 control-label"> Card ID / Passport ID</label>
+      <label for="inputCardID" class="col-sm-2 control-label">Card ID / Passport ID</label>
       <div class="col-sm-10">
         <h5>{{< .RoomBooking.CardID >}}</h5>
       </div>
     </div>
     <div class="form-group">
-      <label for="inputCardID" class="col-sm-2 control-label"> Contact No.</label>
+      <label for="inputCardID" class="col-sm-2 control-label">Contact No.</label>
       <div class="col-sm-10">
         <h5>{{< .RoomBooking.ContactNo >}}</h5>
       </div>
     </div>
     <div class="form-group">
-      <label  class="col-sm-2 control-label"> Status</label>
+      <label  class="col-sm-2 control-label">Status</label>
       <div class="col-sm-10">
-        {{< .RoomBooking.Status >}}
+        <h5>{{< .RoomBooking.Status >}}</h5>
       </div>
     </div>
+
+    {{<if .RoomBooking.CheckIn>}}
+    <div class="form-group">
+      <label  class="col-sm-2 control-label">Check-in</label>
+      <div class="col-sm-10">
+        <h5>{{< .RoomBooking.CheckIn.CheckInDate.Format "2 January 2006 at 3:04pm" >}}</h5>
+      </div>
+    </div>
+    <div class="form-group">
+      <label  class="col-sm-2 control-label">Deposit</label>
+      <div class="col-sm-10">
+        <h5>{{< .RoomBooking.CheckIn.Deposit>}}</h5>
+      </div>
+    </div>
+    {{<end>}}
 
     <table class="table table-striped">
         <thead>

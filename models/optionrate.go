@@ -1,14 +1,14 @@
 package models
 
 type OptionRate struct {
-	name string
-	rate float32
+	Name string
+	Rate float32
 }
 
 func (opt *OptionRate) GetName() string {
-	return opt.name
+	return opt.Name
 }
 
 func (opt *OptionRate) GetRate() float32 {
-	return opt.rate
+	return opt.Rate
 }
